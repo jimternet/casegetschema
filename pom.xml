@@ -7,6 +7,11 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>casegetschema</name>
 	<url>http://maven.apache.org</url>
+	
+	<properties>
+	    <cxfXjcVersion>3.1.0</cxfXjcVersion>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -14,12 +19,15 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+		
+
+
 	</dependencies>
 
 	<build>
 		<plugins>
 
-			<plugin>
+<!-- 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
 				<executions>
@@ -38,7 +46,77 @@
 					<verbose>true</verbose>
 				</configuration>
 
+			</plugin> -->
+
+
+<!-- 
+
+
+									<bindingFile>classpath:/schemas/wsdl/http.xjb</bindingFile>
+									<catalog>${basedir}/src/main/build-resources/catalog.cat</catalog>
+									
+									 -->
+									 
+              <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-compiler-plugin</artifactId>
+                 <configuration>
+                     <source>1.8</source>
+                     <target>1.8</target>
+                 </configuration>
+             </plugin>
+                
+			<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-xjc-plugin</artifactId>
+				<version>${cxfXjcVersion}</version>
+				<executions>
+					<execution>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>xsdtojava</goal>
+						</goals>
+						<configuration>
+							<sourceRoot>${basedir}/target/generated/src/main/java</sourceRoot>
+							<xsdOptions>
+								<xsdOption>
+									<xsd>${basedir}/src/main/xsd/CourtXML_3_2.xsd</xsd>									
+                        				<packagename>gov.mncourts.caseget</packagename>
+
+								</xsdOption>
+							</xsdOptions>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
+
+      
+                
+<!-- 			<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-xjc-plugin</artifactId>
+    				<version>3.5.2</version>
+				<executions>
+					<execution>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>xsdtojava</goal>
+						</goals>
+						<configuration>
+							<sourceRoot>${basedir}/target/generated/src/main/java</sourceRoot>
+							<xsdOptions>
+								<xsdOption>
+									<xsd>classpath:/src/main/xsd/CourtXML_3_2.xsd</xsd>									
+
+								</xsdOption>
+							</xsdOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin> -->
+
 
 		</plugins>
 	</build>
