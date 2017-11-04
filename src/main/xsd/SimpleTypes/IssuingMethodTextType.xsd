@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:annotation>
+    <xs:documentation>Refreshed on: 2016-03-24T11:54:31</xs:documentation>
+  </xs:annotation>
+  <xs:simpleType name="IssuingMethodTextType">
+    <xs:annotation>
+      <xs:documentation>Enumerated list of citation issuance method types.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="In Person" />
+      <xs:enumeration value="Left at Scene" />
+      <xs:enumeration value="Mailed" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="IssuingMethodCodeType">
+    <xs:annotation>
+      <xs:documentation>Enumerated list of citation issuance method types.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PERSON" />
+      <xs:enumeration value="SCENE" />
+      <xs:enumeration value="MAIL" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="IssuingMethodCodeTextType">
+    <xs:simpleContent>
+      <xs:extension base="IssuingMethodTextType">
+        <xs:attribute name="code" type="IssuingMethodCodeType" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:schema>

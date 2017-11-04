@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:annotation>
+    <xs:documentation>Refreshed on: 2017-08-16T07:10:39</xs:documentation>
+  </xs:annotation>
+  <xs:simpleType name="SecurityGroupTextType">
+    <xs:annotation>
+      <xs:documentation>Enumerated list of security groups.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Conf - Administrative" />
+      <xs:enumeration value="Conf - Adoption" />
+      <xs:enumeration value="Conf - ARTS" />
+      <xs:enumeration value="Conf - Civil" />
+      <xs:enumeration value="Conf - Civil Trust" />
+      <xs:enumeration value="Conf - Civil/Prosecution - Associated" />
+      <xs:enumeration value="Conf - Criminal/Traffic" />
+      <xs:enumeration value="Conf - Family" />
+      <xs:enumeration value="Conf - Guardianship" />
+      <xs:enumeration value="Conf - Harassment" />
+      <xs:enumeration value="Conf - Implied Consent" />
+      <xs:enumeration value="Conf - Juvenile (Criminal type)" />
+      <xs:enumeration value="Conf - Juvenile (Protection)" />
+      <xs:enumeration value="Conf - Mental Health" />
+      <xs:enumeration value="Conf - Name Change" />
+      <xs:enumeration value="Conf - Paternity" />
+      <xs:enumeration value="Conf - Probate" />
+      <xs:enumeration value="Conf - Probate Documents" />
+      <xs:enumeration value="Conf - Protective Order" />
+      <xs:enumeration value="Conf - Public Health" />
+      <xs:enumeration value="Conf - Transfer of Legal Custody" />
+      <xs:enumeration value="Conf - VIBES" />
+      <xs:enumeration value="Conf - Welfare Appeal" />
+      <xs:enumeration value="Confidential1" />
+      <xs:enumeration value="Confidential2" />
+      <xs:enumeration value="ConfidentialX" />
+      <xs:enumeration value="Expunged1" />
+      <xs:enumeration value="ExpungedX" />
+      <xs:enumeration value="Pending Probable Cause" />
+      <xs:enumeration value="Public Case - Prior Volume" />
+      <xs:enumeration value="Restricted" />
+      <xs:enumeration value="Seal - Administrative" />
+      <xs:enumeration value="Seal - Adoption" />
+      <xs:enumeration value="Seal - ARTS" />
+      <xs:enumeration value="Seal - Civil" />
+      <xs:enumeration value="Seal - Crim/Traf Mandatory" />
+      <xs:enumeration value="Seal - Crim/Traf Non-Mandatory" />
+      <xs:enumeration value="Seal - Family" />
+      <xs:enumeration value="Seal - Guardianship" />
+      <xs:enumeration value="Seal - Harassment" />
+      <xs:enumeration value="Seal - Juvenile (Criminal type)" />
+      <xs:enumeration value="Seal - Juvenile (Protection)" />
+      <xs:enumeration value="Seal - Mental Health" />
+      <xs:enumeration value="Seal - Probate" />
+      <xs:enumeration value="Seal - Protective Order" />
+      <xs:enumeration value="Sealed1" />
+      <xs:enumeration value="SealedX" />
+      <xs:enumeration value="Z - DO NOT USE                                        Sealed" />
+      <xs:enumeration value="Z - DO NOT USE                                      Expunged" />
+      <xs:enumeration value="Z - DO NOT USE                                  Confidential" />
+      <xs:enumeration value="Z - DO NOT USE                  Delete Case - Clerical Error" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="SecurityGroupCodeType">
+    <xs:annotation>
+      <xs:documentation>Enumerated list of security groups.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CONFADM" />
+      <xs:enumeration value="CONFADO" />
+      <xs:enumeration value="CONFART" />
+      <xs:enumeration value="CONFCIV" />
+      <xs:enumeration value="CONFCTR" />
+      <xs:enumeration value="CONFCPA" />
+      <xs:enumeration value="CONFCRI" />
+      <xs:enumeration value="CONFFAM" />
+      <xs:enumeration value="CONFGUA" />
+      <xs:enumeration value="CONFHAR" />
+      <xs:enumeration value="CONFIMP" />
+      <xs:enumeration value="CONFJCR" />
+      <xs:enumeration value="CONFJPR" />
+      <xs:enumeration value="CONFMEN" />
+      <xs:enumeration value="CONFNAM" />
+      <xs:enumeration value="CONFPAT" />
+      <xs:enumeration value="CONFPRO" />
+      <xs:enumeration value="CONFPRD" />
+      <xs:enumeration value="CONFPOR" />
+      <xs:enumeration value="CONFPUB" />
+      <xs:enumeration value="CONFTRA" />
+      <xs:enumeration value="CONFVIB" />
+      <xs:enumeration value="CONFWEL" />
+      <xs:enumeration value="CONF1" />
+      <xs:enumeration value="CONF2" />
+      <xs:enumeration value="CONFX" />
+      <xs:enumeration value="EXPUNGE1" />
+      <xs:enumeration value="EXPUNGEX" />
+      <xs:enumeration value="PROBCAUSE" />
+      <xs:enumeration value="PUBLIC" />
+      <xs:enumeration value="RESTRICT" />
+      <xs:enumeration value="SEALADM" />
+      <xs:enumeration value="SEALADO" />
+      <xs:enumeration value="SEALART" />
+      <xs:enumeration value="SEALCIV" />
+      <xs:enumeration value="SEALCTM" />
+      <xs:enumeration value="SEALCTN" />
+      <xs:enumeration value="SEALFAM" />
+      <xs:enumeration value="SEALGUA" />
+      <xs:enumeration value="SEALHAR" />
+      <xs:enumeration value="SEALJCR" />
+      <xs:enumeration value="SEALJPR" />
+      <xs:enumeration value="SEALMEN" />
+      <xs:enumeration value="SEALPRO" />
+      <xs:enumeration value="SEALPOR" />
+      <xs:enumeration value="SEAL1" />
+      <xs:enumeration value="SEALX" />
+      <xs:enumeration value="SEAL" />
+      <xs:enumeration value="EXPUNGE" />
+      <xs:enumeration value="CONF" />
+      <xs:enumeration value="DELETE" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="SecurityGroupCodeTextType">
+    <xs:simpleContent>
+      <xs:extension base="SecurityGroupTextType">
+        <xs:attribute name="code" type="SecurityGroupCodeType" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:schema>

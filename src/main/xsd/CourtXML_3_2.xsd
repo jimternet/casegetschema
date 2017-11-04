@@ -1,0 +1,4022 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2015 rel. 3 (http://www.altova.com) by Lee Ann Iverson (MN SUPREME COURT) -->
+<!--
+ Copyright © 2007, 2008, 2009, 2010 by the State of Minnesota
+	State Court Administrator’s Office
+	All Rights Reserved
+-->
+<!--
+	Modification History 
+	Date					Version	Rev			Change
+	01/08/2007		3				1				See the CourtXML 3 Change Log.doc for changes from version 2.0.0.
+	02/02/2007		3				2				Fixed type on WarrantStatusTime
+																Added "Bond" type definitions for outbound Bond Notifications and CaseGet  requests.
+																Changed chargeKey and chargeVersionKey to be mandatory in outbound messages that include charges	
+																Changed name of current attribute on WarrantStatus to be currentWarrantStatus														
+	02/08/2007		3				3				Changed around some complex types to be better used in message schemas.  See specific message schemas for changes that affect those messages.
+	03/09/2007		3				4				Added ProbationOrderEventType
+																Added WarrantConditionTotalAmount to the warrant.
+																Changed WarrantCondition to include the code value and condition amount. 
+	03/30/2007		3				5				Updated the annotation on PersonNameType/PersonSurName.
+																Added a Pattern to SSN for format 999-99-9999
+																Changed Charge in WarrantOutType to be required.
+																Add Level on additional/supplemental statutes.
+																Add a pattern to the email address type to make sure that addresss are properly formatted.
+																Changed JuvenileJudgement/ConditionText to use ConditionAllCodeTextType rather than a union between adult and juvenile types.
+																Eliminated the use of restrictions of complex types.   This should not change any existing messages.
+																Added ConvertedOffenseType and the ConvertedElement to handle converted offenses (for published charges only). 
+																Added an optional "Condition Location" element to conditions on Interim Conditions and Sentences (Juvenile and Adult).
+	04/20/2007		3				6				Set min lenght to 1 for address fields to prevent empty elements from not causing validation errors.
+																Set the maximum occurrance on ChargePlea within Charge to be 1 since there can only be one plea per charge.
+																Set min length to 1 for BusinessNameType to prevent empty business name elements from passing validation.
+																Added the ConvertedOffense structure to the ChargeStatuteSupplemental
+	05/04/2007		3				7				Annotation updates.
+																Added Amount and Comment elements to the DispositionCondition element. 
+																Added the sessionKey (Session Identifer) to the CourtSessionName elmenet within Hearing/Setting
+	05/25/2007		3				8				Fixed the restriction on zip codes to allow zip codes that begin with zero.
+																Fixed the spelling on the simpletype schema name PrefixNameType.xsd (from PreifxNameType.xsd)
+																Added a restriction on the CitationNumber/ID element requiring it to be from 1 to 30 characters.
+																Changed PersonID to be unbounded within PersonAssignedIDDetails for outbound messages since merged parties could have multiple person id values.
+																Assigned the type xs:boolean to the currentNameIndicator attribute on the PartyName element.   The data type was missing.   Also made this element required so it will be included whether the value is true or false.
+																Made IssuedJudge and IssuedDate on outbound warrants optional since they can be removed from issued warrants during the quashing process.
+																Increased the maximum length of AttorneyBarNumber values to 11.
+	06/15/2007			3				9			Added sessionTypeCode and sessionTypeText to CourtSessionNameText within hearing settings. 
+	06/18/2007			3				10		Changed type on zip codes to xs:string with a pattern that restricts to either 5 or 9 numeric digits.
+	12/15/2007			3				11		Re-factoring of CaseEvent types to incorporate ProbationOrder events.
+																Made BondTypeText nillable within WarrantBondType.
+																Made WarrantConditionTextType nillable within WarrantConditionType.
+																Deprecated SuretyBondType and BondOutType.  Added verson 2 of each to accommodate individuals as well as companies as the entity that is guarenteeing the bond.
+																Added minimum length of 1 to StatuteOrdinanceRuleCiteType and ChargeDescriptionTextType. These items were causing database updates to fail when they are required but contain no data. This change allows the schema to enforce the rule instead of the database. 
+																Removed the default from PleaDescriptionText in PleaType.
+																Added CitationDocumentOutType for publishing citations with case get reply messages.
+																Added a min and max length to CourtFileNumber/ID
+																Added NoContactOrderType
+	12/20/2007			3				12		Fix type definition for AddressZipCode for non-standard addresses.
+	01/31/2008			3				13		Add Detention Status simple type include.
+																Added CustodyReleaseOrder
+	02/15/2008			3				14		Added the attributes orderEventKey, sentenceEventKey and sentenceDelinquencyDispositionKey to NoContactOrder element. 
+	02/20/2008			3				15		Added the OrderCommentText to InterimConditionsOrderType and OrderCommentText and ConditionCommentText to NoContactOrderType.
+	06/01/2008			3				16		Added CaseRespondentType.
+																Added FamilyJudgmentType
+																Added includes for the following simple type schemas:
+																	JudgmentInactiveReasonTextType.xsd
+																	PropertyTextType.xsd
+																	JudgmentAwardSatisfactionTypeTextType.xsd
+																	JudgmentAwardSatisfactionDocumentTypeTextType.xsd
+																	JudgmentAwardSatisfactionCostsTypeTextType.xsd
+																	JudgmentSupportTypeTextType.xsd
+																	JudgmentSupportMethodTextType.xsd
+																	JudgmentSupportCostsTextType.xsd
+	07/16/2008			3				17			Added an enumeration value of Inches and Pounds to the measureUnit of Height and Weight party elements.
+	02/05/2009			3				18			Changed TelephoneSubscriberID in TelephoneNumberBaseType to nonNegativeInteger to allow a value of 0000
+																Changed annotation for SentenceChargeSeverityLevel to indicate that this feature has been implemented.
+																Added annotation that within HearingTrialType JudicialAgencyORI/ID and CourtName@code are redundant.
+	04/21/2010			3				19			Updated the annotation on CaseTitle.
+	05/13-2010			3				20			Created new family judgment element to eliminate some specific schema validation errors. Elements modified include:
+																Award;InactiveReasonText; and MethodFrequencyText. 
+	07/12/2013			3.1			1				Updates to charge elements.
+	01/08/2014			3.1			2				Remvoe ChargeAmmendedType..
+	09/23/2015			3.2			1				Changed cardinality of CustodySubject and VisitationSubject within the FamilyJudgmentType and VisitationSubject within the JuvenileJudgmentType;
+																Added new BondType element and changed cardinality of BondTypeText
+																Added WarrantSplitBondType 
+																Added new PartyEmail element with a current indicator
+																Updated PartyNameAddressPhoneEmailType to reference the new PartyEmail and made that element unbounded.
+																Updated the length of AddressStreetNumber to 20 within the AddressUSStandardType
+																Changed FamilyJudgmentType to allow repeating Support elements
+																Removed PersonComplexionText from PersonPhysicalDetailsType
+																Changed CaseEventDateTime to CaseEventDate and added a new optional element for CaseEventTime
+																Added new element CaseEventAmount
+																Removed never-used GroupCommentText from GroupType
+																Removed never-used DispositionCostElement from DispositionComponentType
+																Changed orderEventKey to be required in OrderEventType (changed back to optional 02/18/16)
+																Changed DispositionDurationalElement in DispositionComponentType to allow multiples.
+																Updated the annotation for DispositionComponentValues
+																Change AssignedCourt to CaseLocationText in CaseAssignmentType
+																Added new element ChildSupportJudgmentIndicator to JudgmentAwardType
+																Changed StartDateTime in DispositionalDurationalElement to StartDate and added new optional element for StartTime
+																Changed EndDateTime in DispositionalDurationalElement to EndDate and added new optional element for EndTime
+																Changed PartyBaseType to allow repeating PartyCaseAssociationText elements
+																Changed CasePartyRelatationType to allow repeating PartyCaseAssociationText elements
+																Changed max length of CommentType from 7000 to 8000
+																Removed Dates container element from JudgmentAwardType
+																Changed IssuingMethodText enumerations to reference the Simple Type rather than the enumerated values in the schema
+																Added global CaseStatus element & removed CourtCaseStatusType complex type
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1">
+	<!--Includes of External CourtXML Simple Types based on Odyssey Code Tables-->
+	<xs:include schemaLocation="SimpleTypes/AmendmentReasonChargeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/AmendmentReasonCriminalDispositionType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/AmendmentReasonJudgmentType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/AmendmentReasonPleaType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/AmendmentReasonSentenceType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/AddressUnitTypeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/AddressStreetType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/AgencyCodeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/AgencyORIType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/AddressStreetType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/AgencyORIType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/AttorneyRemovedReasonType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/BACStatusType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/BaseCaseTypeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/BaseConnectionTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/BondCompanyTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/BondPostedLocationTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/BondStatusLocationTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/BondStatusTypeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/BondTypeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CaseCrossReferenceIdentifierType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CaseCategoryTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CaseEventType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CaseIndicatorType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CaseNameTypeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CiteeInvolvementType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CourtLocationTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CaseStatusTypeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CaseSubTypeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CaseTypeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CautionFlagTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CommunityOfOffenseTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ConditionAgencyTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CitationAccidentType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ChargeDispositionTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ConditionAdultType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CriminalCaseTypeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CourtCalendarNameTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ConditionAllType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ConditionJuvenileType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ConditionNoContactType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ConditionWarrantType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CountryType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/CourtLocationTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/DetentionStatusType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/DirectionTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/DispositionComponentValueType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/DispositionSentenceTypeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/DriverLicenseStateType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/EFileQueueReasonTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/EthnicType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ExtendedPartyConnectionType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/EyeColorType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/FinancialCategoryTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/GenderType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/GeneralOffenseCodeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/GroupPartyRelationType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/GroupTypeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/HairColorType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/HearingType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/HearingLocationTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/HearingSessionTypeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/HearingSettingCancellationReasonTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/IssuingMethodTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/JudgmentEventTypeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/JudgmentInactiveReasonTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/JudgmentSupportCostsTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/JudgmentSupportMethodTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/JudgmentSupportTypeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/JudicialAgencyORIType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/JuvenileDetentionAgencyORIType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/JudgmentAwardSatisfactionDocumentTypeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/JudgmentAwardSatisfactionTypeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/JudgmentAwardSatisfactionCostsTypeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/JuvenilePlacementAgencyType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/LanguageType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/LEAORIType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/LocalConfinementORIType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/MaritalStatusTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/MNJudges.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/OffenseSeverityLevelType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/OrdinanceOffenseCategoryType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/PGCPartyCaseAssociationTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/PhysicalDetailsType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/PlacementType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/PrefixNameType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ProbationAgencyORIType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/PropertyDamageType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/PropertyTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ProfessionalPartyCaseAssociationTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ProsecutorORIType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ProsecutorORIOutType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ProfessionalPartyCaseAssociationTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/PartyRemovedReasonTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/PersonOtherIDTypeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/PleaDescriptionTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/RaceType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/ReassignmentReasonTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/RelatedCaseReasonTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/RuleChargingOffenseType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/SentenceEventType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/SuffixNameType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/SettingRescheduledReasonTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/StateTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/StatutorySupplementalOffenseType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/StatutoryChargingOffenseType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/SupplementalStatuteTypeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/TelephoneNumberUsageType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/TreatmentCenterORIType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/VehicleTypeType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/VehicleColorTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/VehicleMakeTextType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/WarrantLocationType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/WarrantStatusType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/WeatherConditionsType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/WarrantStatusType.xsd"/>
+	<xs:include schemaLocation="SimpleTypes/WarrantTypeTextType.xsd"/>
+	<xs:annotation>
+		<xs:documentation>=============                               Address/Phone/Email Types</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="AddressZipCodeType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(\d{5}|\d{9})"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="AddressUSStandardType">
+		<xs:sequence>
+			<xs:element name="AddressAttention" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="120"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressStreetNumber">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressPreDirectional" type="DirectionCodeTextType" nillable="true" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>E.g., The "West" in "West 54th Street"</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AddressStreet">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="80"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressStreetType" type="AddressStreetTypeCodeTextType" nillable="true" minOccurs="0"/>
+			<xs:element name="AddressPostDirectional" type="DirectionCodeTextType" nillable="true" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>E.g., The "North" in "Lexington Avenue North"</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AddressUnit" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="AddressUnitType" type="AddressUnitTypeCodeTextType" nillable="true" minOccurs="0"/>
+						<xs:element name="AddressUnitNumber" minOccurs="0">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="10"/>
+									<xs:minLength value="1"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AddressCity">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="40"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressState">
+				<xs:simpleType>
+					<xs:restriction base="StateCodeType">
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressZipCode" type="AddressZipCodeType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AddressUSNonStandardType">
+		<xs:sequence>
+			<xs:element name="AddressLine1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="64"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressLine2" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="64"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressLine3" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="64"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressCity">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="40"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressState" type="StateCodeType"/>
+			<xs:element name="AddressZipCode" type="AddressZipCodeType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AddressForeignType">
+		<xs:sequence>
+			<xs:element name="AddressLine1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="64"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressLine2" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="64"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressLine3" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="64"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="AddressLine4" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="64"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="PartyEmail">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="PartyEmailType">
+					<xs:attribute name="currentEmailAddressIndicator" type="xs:boolean" use="required"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="PartyEmailType">
+		<xs:restriction base="xs:anyURI">
+			<xs:pattern value="[^@]+@[^@\.][a-zA-Z0-9\.]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="PartyAddressBaseType">
+		<xs:choice>
+			<xs:element name="AddressUSStandard" type="AddressUSStandardType"/>
+			<xs:element name="AddressUSNonStandard" type="AddressUSNonStandardType"/>
+			<xs:element name="AddressForeign" type="AddressForeignType"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="PartyAddressType">
+		<xs:complexContent>
+			<xs:extension base="PartyAddressBaseType">
+				<xs:attribute name="caseCorrespondenceIndicator" type="xs:boolean" use="required"/>
+				<xs:attribute name="partyCorrespondenceIndicator" type="xs:boolean" use="required"/>
+				<xs:attribute name="currentKnownAddressIndicator" type="xs:boolean" use="required"/>
+				<xs:attribute name="undeliverableIndicator" type="xs:boolean" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TelephoneNumberBaseType">
+		<xs:annotation>
+			<xs:documentation>A subset of JXDM elements to hold telephone number information.  MNCIS introduces the attributes of Current phone number as well as indicator for an Invalid phone number.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TelephoneInternationDirectDialID" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Only available on International Phone Numbers other than 011 (USA)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TelephoneCountryCodeID" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Only available on International phone numbers.  Otherwise a Country Code of 1 is assumed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TelephoneAreaCodeID" type="xs:positiveInteger" minOccurs="0"/>
+			<xs:element name="TelephoneExchangeID" type="xs:positiveInteger" minOccurs="0"/>
+			<xs:element name="TelephoneSubscriberID" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="TelephoneSuffixID" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Extension</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="telephoneNumberUsageText" type="TelephoneNumberUsageType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TelephoneNumberType">
+		<xs:complexContent>
+			<xs:extension base="TelephoneNumberBaseType">
+				<xs:sequence>
+					<xs:element name="TelephoneNumberFullID" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>The fully formatted telephone number</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="currentTelephoneNumberIndicator" type="xs:boolean" use="required"/>
+				<xs:attribute name="invalidTelephoneNumberIndicator" type="xs:boolean" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                               Name Types</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="PersonGivenNameType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="40"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PersonMiddleNameType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="40"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PersonSurNameType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="80"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PersonFullNameType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="180"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="PersonNameType">
+		<xs:annotation>
+			<xs:documentation>A CourtXML type modeled after jxdm:PersonNameType.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PersonPrefixName" type="PrefixNameTypeCodeTextType" nillable="true" minOccurs="0"/>
+			<xs:element name="PersonGivenName" type="PersonGivenNameType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>First name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonMiddleName" type="PersonMiddleNameType" minOccurs="0"/>
+			<xs:element name="PersonSurName" type="PersonSurNameType">
+				<xs:annotation>
+					<xs:documentation>Last name.  If an idividual has only one name, i.e., no first name, the single name goes into PersonSurName. In MNCIS, that name will be formatted as a nickname. In this case the prefix and suffix are ignored.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonSuffixName" type="SuffixNameTypeCodeTextType" nillable="true" minOccurs="0"/>
+			<xs:element name="PersonFullName" type="PersonFullNameType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The fully formated name made up of all of the individual parts.  Thie element is included in all outbound messages and is ignored in all inbound messages.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="BusinessNameType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="80"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="PartyNameBaseType">
+		<xs:choice>
+			<xs:element name="BusinessName" type="BusinessNameType"/>
+			<xs:element name="PersonName" type="PersonNameType"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="PartyNameType">
+		<xs:complexContent>
+			<xs:extension base="PartyNameBaseType">
+				<xs:attribute name="currentNameIndicator" type="xs:boolean" use="required">
+					<xs:annotation>
+						<xs:documentation>currencyNameIndicator prohibitted when you have an Alias child</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="nameTypeText" type="CaseNameTypeCodeType">
+					<xs:annotation>
+						<xs:documentation>AKA denotes an Alias</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PartyNameTypeOld">
+		<xs:choice>
+			<xs:element name="BusinessName" type="BusinessNameType"/>
+			<xs:element name="PersonName" type="PersonNameType"/>
+		</xs:choice>
+		<xs:attribute name="currentNameIndicator" use="optional">
+			<xs:annotation>
+				<xs:documentation>currencyNameIndicator prohibitted when you have an Alias child</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="nameTypeText" type="CaseNameTypeCodeType">
+			<xs:annotation>
+				<xs:documentation>AKA denotes an Alias</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                               Party/Person Types</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="PartyBaseType">
+		<xs:sequence>
+			<xs:element name="PartyName" type="PartyNameType" maxOccurs="unbounded"/>
+			<xs:element name="PartyCaseAssociationText" type="ExtendedPartyConnectionTypeCodeTextType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional since this type is sometimes used for parties outside of the context of a case.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="PartyNameAddressPhoneEmailType">
+		<xs:complexContent>
+			<xs:extension base="PartyBaseType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="PartyAddress" type="PartyAddressType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="PartyTelephoneNumber" type="TelephoneNumberType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="PartyEmail" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PartyDetailType">
+		<xs:complexContent>
+			<xs:extension base="PartyNameAddressPhoneEmailType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Group" type="GroupType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>A user defined construct to permit the assignment of a Case or Party to a group.  There can be multiple Group Types, e.g., Family Unit, Treatment Program.  Within a Group Type there is a unique Group Identifier for each specified group in the GroupType.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PersonBirthDate" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:date">
+									<xs:attribute name="currentBirthdate" type="xs:boolean">
+										<xs:annotation>
+											<xs:documentation>Indicates whether a given birthdate instance is considered the accepted one.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="PersonBirthLocation" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The subset of JXDM elements the courts use to record a person's location of birth.</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="LocationAddress" type="LocationAddressType"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="PartyDeathDate" type="xs:date" minOccurs="0"/>
+					<xs:element name="PersonCitizenshipText" type="CountryTypeCodeTextType" minOccurs="0"/>
+					<xs:element name="MaritalStatusText" type="MaritalStatusCodeTextType" minOccurs="0"/>
+					<xs:element name="ForeignLanguageText" type="ForeignLanguageTextType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="InterpreterNeededIndicator" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="CurrentEmployerIdentifier" minOccurs="0">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:string">
+									<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="CurrentSchoolIdentifier" minOccurs="0">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:string">
+									<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AttorneyType">
+		<xs:sequence>
+			<xs:element name="PartyName" type="PartyNameType" maxOccurs="unbounded"/>
+			<xs:element name="PartyAddress" type="PartyAddressType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="PartyTelephoneNumber" type="TelephoneNumberType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="PartyEmail" type="xs:anyURI" minOccurs="0"/>
+			<xs:element name="AttorneyBarNumber" type="AttorneyBarNumberType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="partyKey" type="xs:positiveInteger"/>
+	</xs:complexType>
+	<xs:complexType name="PartyToTheActionType">
+		<xs:complexContent>
+			<xs:extension base="PartyNameAddressPhoneEmailType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="RepresentedBy" type="RepresentedByType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CaseDefendantType">
+		<xs:complexContent>
+			<xs:extension base="PartyDetailType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="PersonAssignedIDDetails" type="PersonAssignedIDDetailsType" minOccurs="0"/>
+					<xs:element name="PersonPhysicalDetails" type="PersonPhysicalDetailsType" minOccurs="0"/>
+					<xs:element name="CriminalAdditionalData" type="CriminalDelinquencyAdditionalDataType" minOccurs="0"/>
+					<xs:element name="RepresentedBy" type="RepresentedByType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ChildDelinquentType">
+		<xs:complexContent>
+			<xs:extension base="PartyDetailType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="PersonAssignedIDDetails" type="PersonAssignedIDDetailsType" minOccurs="0"/>
+					<xs:element name="PersonPhysicalDetails" type="PersonPhysicalDetailsType" minOccurs="0"/>
+					<xs:element name="DelinquencyAdditionalData" type="CriminalDelinquencyAdditionalDataType" minOccurs="0"/>
+					<xs:element name="RepresentedBy" type="RepresentedByType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ChildNonDelinquentType">
+		<xs:complexContent>
+			<xs:extension base="PartyDetailType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="ChildAssignedIDDetails" type="ChildAssignedIDDetailsType" minOccurs="0"/>
+					<xs:element name="ChildPhysicalDetails" type="ChildPhysicalDetailsType" minOccurs="0"/>
+					<xs:element name="RepresentedBy" type="RepresentedByType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CasePetitionerPlaintiffType">
+		<xs:complexContent>
+			<xs:extension base="PartyNameAddressPhoneEmailType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="RepresentedBy" type="RepresentedByType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CaseRespondentType">
+		<xs:complexContent>
+			<xs:extension base="PartyNameAddressPhoneEmailType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="RepresentedBy" type="RepresentedByType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ParentGuardianCustodianType">
+		<xs:complexContent>
+			<xs:extension base="PartyNameAddressPhoneEmailType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="Group" type="GroupType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="ChildReference" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>References a child associated with this Parent. Tyler IXML requires enhancement to support.</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RepresentedBy" type="RepresentedByType" minOccurs="0"/>
+					<xs:element name="PersonBirthDate" type="xs:date" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="PersonSexText" type="GenderTypeCodeTextType" minOccurs="0"/>
+					<xs:element name="ForeignLanguageText" type="ForeignLanguageTextType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="VictimType">
+		<xs:complexContent>
+			<xs:extension base="PartyNameAddressPhoneEmailType">
+				<xs:sequence minOccurs="0">
+					<xs:element name="PersonBirthDate" type="xs:date" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="PersonSexText" type="GenderTypeCodeTextType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WitnessType">
+		<xs:complexContent>
+			<xs:extension base="PartyBaseType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubjectType">
+		<xs:choice>
+			<xs:element name="PartyReference">
+				<xs:complexType>
+					<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ChildNonDelinquent" type="ChildNonDelinquentType"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="CasePartyRelationType">
+		<xs:sequence>
+			<xs:element name="PartyReference">
+				<xs:complexType>
+					<xs:attribute name="partyKey" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PartyCaseAssociationText" type="ExtendedPartyConnectionTypeCodeTextType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                               Person ID Types</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="PersonAssignedIDDetailsType">
+		<xs:sequence>
+			<xs:element name="PersonID" type="PersonIDType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="PersonSSNID" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="PersonDriverLicenseID" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="PersonFBIID" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A number issued by the FBI&apos;s Automated Fingerprint Identification System (AFIS) based on submitted fingerprints.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="PersonFBIIDType">
+							<xs:attribute name="currentKnownIndicator" type="xs:boolean" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PersonStateID" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A number issued by a state Automated Fingerprint Identification System (AFIS) based on submitted fingerprints. Sometimes referred to as a State ID number or a SID.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="PersonStateIDType">
+							<xs:attribute name="currentKnownIndicator" type="xs:boolean" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PersonOtherID" type="PersonOtherIDType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChildAssignedIDDetailsType">
+		<xs:sequence>
+			<xs:element name="PersonID" type="PersonIDType" minOccurs="0"/>
+			<xs:element ref="PersonSSNID" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="PersonDriverLicenseID" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="PersonOtherID" type="PersonOtherIDType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonStateIDType">
+		<xs:annotation>
+			<xs:documentation>A number issued by a state Automated Fingerprint Identification System (AFIS) based on submitted fingerprints. Sometimes referred to as a State ID number or a SID.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="ID1to30Type">
+				<xs:annotation>
+					<xs:documentation>Number portion of state id.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IDJurisdictionCode" type="StateCodeType">
+				<xs:annotation>
+					<xs:documentation>State portion of state id</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonSSNIDType">
+		<xs:annotation>
+			<xs:documentation>A 9-digit numeric identifier assigned to a living person by the U.S. Social Security Administration.  A social security number of a person.  Sometimes referred to as a SSN.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="IDSSNType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="PersonSSNID">
+		<xs:annotation>
+			<xs:documentation> Supreme Court Order required for access. Only provided under special circumstances.  The social security number of a person. Sometimes referred to as a SSN. </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="PersonSSNIDType">
+					<xs:attribute name="currentKnownIndicator" type="xs:boolean" use="required"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="PersonDriverLicenseIDType">
+		<xs:annotation>
+			<xs:documentation>Information about an identifier used to refer to a specific person who has obtained a driver&apos;s license. Sometimes referred to as driver license number, dlNumber.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="ID1to20Type"/>
+			<xs:element name="IDJurisdictionCode" type="DriverLicenseStateType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonOtherIDType">
+		<xs:annotation>
+			<xs:documentation>A structure modeled after JXDM that describes an identifier issued to a person.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="ID1to30Type"/>
+			<xs:element name="IDTypeText" type="PersonOtherIDTypeType" minOccurs="0"/>
+			<xs:element name="IDTypeCodeText" type="PersonOtherIDTypeCodeType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonFBIIDType">
+		<xs:annotation>
+			<xs:documentation>A structure modeled after JXDM that describes an identifier issued to a person.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="ID1to30Type"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonIDType">
+		<xs:annotation>
+			<xs:documentation>ID Assigned to criminal "Defendant" parties within MNCIS.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="ID1to30Type"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AttorneyBarNumberType">
+		<xs:sequence>
+			<xs:element name="ID" type="ID1to11Type"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="PersonDriverLicenseID">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="PersonDriverLicenseIDType">
+					<xs:attribute name="currentKnownIndicator" type="xs:boolean"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="AttorneyBarNumber" type="AttorneyBarNumberType">
+		<xs:annotation>
+			<xs:documentation>The ID assigned to an attorney by the Minnesota Attorney Registration system (MARS).</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:annotation>
+		<xs:documentation>=============                               Person other attributes</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="LocationAddressType">
+		<xs:annotation>
+			<xs:documentation>The subset of JXDM elements the courts use to record a person's location of birth.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="LocationCityName" type="LocationCityNameType" minOccurs="0"/>
+			<xs:element name="LocationStateName" type="StateTextType" minOccurs="0"/>
+			<xs:element name="LocationStateCode" type="StateCodeType" minOccurs="0"/>
+			<xs:element name="LocationCountryName" type="CountryType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="LocationCityNameType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="40"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="PersonEthnicityType">
+		<xs:annotation>
+			<xs:documentation>Supreme Court Order required for access. Only provided under special circumstances.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PartyReportedEthnicityText" type="EthnicTypeCodeTextType" nillable="true" minOccurs="0"/>
+			<xs:element name="LawEnforcementObservedEthnicityText" type="EthnicTypeCodeTextType" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="PersonEthnicity" type="PersonEthnicityType">
+		<xs:annotation>
+			<xs:documentation>Supreme Court Order required for access. Only provided under special circumstances.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="PersonRaceType">
+		<xs:annotation>
+			<xs:documentation>Supreme Court Order required for access. Only provided under special circumstances.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PartyReportedRaceText" type="RaceTypeCodeTextType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>MNCIS stores this race data with the Party</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LawEnforcementObservedRaceText" type="RaceTypeCodeTextType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>MNCIS stores this race data with the case</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="PersonRace" type="PersonRaceType">
+		<xs:annotation>
+			<xs:documentation>Supreme Court Order required for access. Only provided under special circumstances.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="RelatedPartyType">
+		<xs:choice>
+			<xs:element name="PartyReference">
+				<xs:complexType>
+					<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Party" type="PartyNameAddressPhoneEmailType"/>
+		</xs:choice>
+		<xs:attribute name="partyKey"/>
+	</xs:complexType>
+	<xs:complexType name="RepresentedByType">
+		<xs:annotation>
+			<xs:documentation>Describes the legal representation for a party.  It is also recommended that you consider consuming the AttorneyPartyCaseRelation Element which provides further information on an attorney's representation in a specific case. </xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Attorney" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="AttorneyType">
+							<xs:attribute name="leadAttorneyIndicator" type="xs:boolean"/>
+							<xs:attribute name="publicDefenderIndicator" type="xs:boolean"/>
+							<xs:attribute name="courtAppointedIndicator" type="xs:boolean"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AttorneyReference" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Provides the Attorney License #.  An efficient means to access attorney information when you may already have this attorney on file or access to the attorney registration database.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="AttorneyBarNumber" type="AttorneyBarNumberType" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+					<xs:attribute name="leadAttorneyIndicator" type="xs:boolean"/>
+					<xs:attribute name="publicDefenderIndicator" type="xs:boolean"/>
+					<xs:attribute name="courtAppointedIndicator" type="xs:boolean"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ProSeIndicator" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Where true, party is representing themselves</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="PersonWeightMeasureType">
+		<xs:simpleContent>
+			<xs:extension base="xs:decimal">
+				<xs:attribute name="measureUnitText" use="required">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Pounds"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="PersonHeightMeasureType">
+		<xs:simpleContent>
+			<xs:extension base="xs:decimal">
+				<xs:attribute name="measureUnitText" use="required">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Inches"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="PersonPhysicalFeatureType">
+		<xs:sequence>
+			<xs:element name="PersonPhysicalFeatureText" type="PhysicalDetailsTypeCodeTextType"/>
+			<xs:element name="PersonPhysicalFeatureCommentText" type="CommentType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonPhysicalDetailsType">
+		<xs:annotation>
+			<xs:documentation>The subset of JXDM elements Minnesota Courts may record relating to a person's physical description.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PersonHeightMeasure" type="PersonHeightMeasureType" minOccurs="0"/>
+			<xs:element name="PersonWeightMeasure" type="PersonWeightMeasureType" minOccurs="0"/>
+			<xs:element name="PersonEyeColorText" type="EyeColorTypeCodeTextType" nillable="true" minOccurs="0"/>
+			<xs:element name="PersonHairColorText" type="HairColorTypeCodeTextType" nillable="true" minOccurs="0"/>
+			<xs:element name="PersonSexText" type="GenderTypeCodeTextType" nillable="true" minOccurs="0"/>
+			<xs:element ref="PersonEthnicity" minOccurs="0"/>
+			<xs:element ref="PersonRace" minOccurs="0"/>
+			<xs:element name="PersonPhysicalFeature" type="PersonPhysicalFeatureType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChildPhysicalDetailsType">
+		<xs:annotation>
+			<xs:documentation>The subset of JXDM elements Minnesota Courts may record relating to a person's physical description.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PersonSexText" type="GenderTypeCodeTextType" nillable="true" minOccurs="0"/>
+			<xs:element name="PersonEthnicity" type="PersonEthnicityType" nillable="true" minOccurs="0"/>
+			<xs:element name="PersonRace" type="PersonRaceType" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CriminalDelinquencyAdditionalDataType">
+		<xs:sequence>
+			<xs:element name="Cautions" type="CautionFlagCodeTextType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ForeignLanguageTextType">
+		<xs:simpleContent>
+			<xs:extension base="LanguageTypeCodeTextType">
+				<xs:attribute name="primaryLanguageIndicator" type="xs:boolean"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                              Charge/Citation</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="OffenseCiteType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="40"/>
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OffenseDescriptionTextType">
+		<xs:annotation>
+			<xs:documentation>This field will contain the offense description if a charge description differs from the text in the statute table.  </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"/>
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OffenseLocationTextType">
+		<xs:annotation>
+			<xs:documentation>Free Form text corresponding to 'Location of Violation', e.g., milepost 73, fourth and main, 2345 City Street, etc.  </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="40"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OfficerNameType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="150"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="MinnesotaOffenseCodeType">
+		<xs:restriction base="xs:string">
+			<xs:length value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TrialDemandTypeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Jury Trial"/>
+			<xs:enumeration value="Speedy Trial"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TrialDemandActionType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Demanded"/>
+			<xs:enumeration value="Waived"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="WeightMeasurementUnitTextType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Pounds"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ArrestingAgencyCodeType">
+		<xs:sequence>
+			<xs:element name="ID" type="AgencyCodeType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrestingAgencyORIType">
+		<xs:sequence>
+			<xs:element name="ID" type="LEAORIType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BloodAlcoholConcentrationType">
+		<xs:annotation>
+			<xs:documentation>Required for DWI offenses. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Level" type="xs:decimal" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Measured blood alcohol concentration amount.  Required if status is BAC Test Was Administered</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Status" type="BACStatusTypeCodeTextType" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Indicates whether or not the BAC Status is available.  </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChargeSequenceIDType">
+		<xs:annotation>
+			<xs:documentation>Denotes a sequential ordering of charges to a case, e.g., Count Number.  A charge can be renumbered, i.e., resequenced relative to other counts during the pendancy of the case.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[0-9]+"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChargeStatuteSupplementalType">
+		<xs:sequence>
+			<xs:element name="StatuteTypeText" type="SupplementalStatuteTypeCodeTextType" nillable="true"/>
+			<xs:element ref="OffenseID"/>
+			<xs:element ref="OffenseCite" minOccurs="0"/>
+			<xs:element ref="OffenseDescriptionText" minOccurs="0"/>
+			<xs:element ref="SeverityLevelText" minOccurs="0"/>
+			<xs:element ref="ChargeLegalDescriptionText" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This element will contain the legal or formal description of a charge.  This element will not be accepted on inbound messages such as complaints or citations.  It will always be included on outbound messages such as queries and notifications.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChargeSubjectReferenceType">
+		<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CitationNumberType">
+		<xs:annotation>
+			<xs:documentation>Number assigned to a citation by the issuing agency.  When combined with the issuing agency ORI it should be unique within an agency.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="30"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CitationReferenceType">
+		<xs:annotation>
+			<xs:documentation>Reference to a citation.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="CitationNumber"/>
+			<xs:element ref="IssuingAgencyORI"/>
+		</xs:sequence>
+		<xs:attribute name="citationKey" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="ControlNumberType">
+		<xs:annotation>
+			<xs:documentation>A type for law enforcement control numbers</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ControlNumberInType">
+		<xs:annotation>
+			<xs:documentation>A type for law enforcement control numbers used on inbound message restricting control numbers to be exactly 8 characters in length.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="8"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IssuingAgencyORIType">
+		<xs:annotation>
+			<xs:documentation>ORI of Agency Issuing the Citation</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="LEAORIType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OffenseIDType">
+		<xs:annotation>
+			<xs:documentation>Reference ID.  Typically this is the Statute ID from MNJIS State Statute Service for violations of state statutes and rules.  If not in the Statute Service, then it is a Reference ID from State Court.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OfficerBadgeNumberType">
+		<xs:annotation>
+			<xs:documentation>Badge number of the citing officer.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OfficerType">
+		<xs:sequence>
+			<xs:element ref="OfficerBadgeNumber" minOccurs="0"/>
+			<xs:element ref="OfficerNameText" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ProsecutingAgencyORIType">
+		<xs:annotation>
+			<xs:documentation>Agency responsible for filing and prosecuting the case.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="ProsecutorORIType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ReportingAgencyCodeType">
+		<xs:sequence>
+			<xs:element name="ID" type="AgencyCodeType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ReportingAgencyORIType">
+		<xs:sequence>
+			<xs:element name="ID" type="LEAORIType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SpeedingType">
+		<xs:annotation>
+			<xs:documentation>Details about the speed of the vehicle involved in the incident.  Required for speeding offenses.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="PostedSpeedMeasure"/>
+			<xs:element ref="ObservedSpeedMeasure"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TrialDemandType">
+		<xs:sequence>
+			<xs:element ref="TrialDemandType"/>
+			<xs:element ref="TrialDemandDate"/>
+			<xs:element ref="TrialDemandAction"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VehicleOverweightMeasureType">
+		<xs:simpleContent>
+			<xs:extension base="xs:positiveInteger">
+				<xs:attribute name="measureUnitText" type="WeightMeasurementUnitTextType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="WeatherConditionCodeTextType">
+		<xs:simpleContent>
+			<xs:extension base="WeatherConditionsType">
+				<xs:attribute name="code" type="WeatherConditionsCodeType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:element name="AccidentDamageText" type="CitationAccidentTypeCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Description for the damage or injury caused by the accident associated with this charge.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="AnimalsOverLimitCount" type="xs:positiveInteger">
+		<xs:annotation>
+			<xs:documentation>Number of animals over the limit. Certain DNR violations involve a violation of the number of animals allowed to be taken. Used to determine the fine amount.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="AppearBy">
+		<xs:annotation>
+			<xs:documentation>Details about when and where a defendant must respond to the charges.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="AppearByDate" minOccurs="0"/>
+				<xs:element ref="AppearLocationText" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="AppearByDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Specifies the date by which the defendant must appear in court or pay the fine, if that is an option.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="AppearLocationText" type="CourtLocationCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Location where the Defendant must appear. Must be a value from the enumerated list.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ArrestDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>The date an arrest occurred.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ArrestingAgencyControlNumber" type="ControlNumberType">
+		<xs:annotation>
+			<xs:documentation>The arresting agencies incident identifier.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ArrestingAgencyORI" type="ArrestingAgencyCodeType">
+		<xs:annotation>
+			<xs:documentation>The identifier for the agency associated with an arrest.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ArrestingOfficial" type="OfficerType">
+		<xs:annotation>
+			<xs:documentation>The officer that performed an arrest.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ArrestTime" type="xs:time">
+		<xs:annotation>
+			<xs:documentation>The time an arrest occurred.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="BloodAlcoholConcentration" type="BloodAlcoholConcentrationType">
+		<xs:annotation>
+			<xs:documentation>Required for DWI offenses.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ChargeAmended">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ChargeAmendedReasonText" maxOccurs="unbounded"/>
+				<xs:element ref="ChargeAmendedDate"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ChargeAmendedReasonText" type="AmendmentReasonChargeTypeCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>The reason a charge may have been amended.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ChargeAmendedDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>The date the charge was amended.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ChargeFiledDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>The date that a charge was filed with the court.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ChargeLegalDescriptionText">
+		<xs:annotation>
+			<xs:documentation>This element will contain the legal or formal description of a charge.  This element will not be accepted on inbound messages such as complaints or citations.  It will always be included on outbound messages such as queries and notifications. </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:minLength value="1"/>
+				<xs:maxLength value="100"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ChargeSequenceID" type="ChargeSequenceIDType">
+		<xs:annotation>
+			<xs:documentation>Denotes a sequential ordering of charges to a case, e.g., Count Number.  A charge can be renumbered, i.e., resequenced relative to other counts during the pendency of the case.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ChargeSubjectReference" type="ChargeSubjectReferenceType">
+		<xs:annotation>
+			<xs:documentation>A reference to the party associated to the charge. </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CitationNumber" type="CitationNumberType">
+		<xs:annotation>
+			<xs:documentation>The law-enforcement assigned identifier for a citation.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CommunityOfOffenseText" type="CommunityOfOffenseCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Specifies political subdivision in which the offense occured.  Must be selected from the enumerated list of values that are available in the court that the citation is being submitted to. Often governs who prosecutes and the distribution of fine monies.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="FingerPrintedIndicator" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>If true, indicates the fingerprints for defendant have been submitted to the BCA for this case. </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="FingerprintsNeededIndicator" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>If true, indicates fingerprints are needed.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="GeneralOffenseCodeText" type="GeneralOffenseCodeTextTypeCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>The General Offense Code (GOC) are used to further qualify the criminal offense.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="IssuingAgencyORI" type="IssuingAgencyORIType">
+		<xs:annotation>
+			<xs:documentation>ORI of Agency Issuing the Citation</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="IssuingMethodText" type="IssuingMethodCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Specifies how the citation was issued to the citee.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="MinnesotaOffenseCode" type="MinnesotaOffenseCodeType">
+		<xs:annotation>
+			<xs:documentation>MOC - Required on Felony, Gross Misdemeanor, and Targeted Misdemeanor level charges.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ObservedSpeedMeasure" type="xs:positiveInteger">
+		<xs:annotation>
+			<xs:documentation>Vehicle speed cited by officer</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseCite" type="OffenseCiteType">
+		<xs:annotation>
+			<xs:documentation>The offense cite.  This element will reflect the catolog reference to a specifc statute, ordinance, or rule.  When used in combination with Offense Owner Text it will be a unique reference to the governing legal code.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date the offense is alleged to have occurred.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseDateEnd" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>If an offense is alleged to have occurred over a date range, OffenseDateEnd specifies the date when the commission of the offense ended.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseDatesOnOrAbout" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>If true, denotes that the date or date range the offense is alleged to have occurred is approximate.  </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseDescriptionText" type="OffenseDescriptionTextType">
+		<xs:annotation>
+			<xs:documentation>This element will contain the charge description if the officer uses a charge description that differs from the text in the statute table.   This element should not be included on inbound messages such as complaints and citations (other than for PENDING offenses) and will always be included on outbound messages such as queries and notifications.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseID" type="OffenseIDType">
+		<xs:annotation>
+			<xs:documentation>Identifier for the offiense.  Can be a statute ID, ordinance ID, rule ID.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseLocationText" type="OffenseLocationTextType">
+		<xs:annotation>
+			<xs:documentation>Free form text corresponding to 'Location of Violation', e.g., milepost 73, fourth and main, 2345 City Street, etc.  </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseOwnerText" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>The owner of the Offense ID, e.g. State Statute, Becker County.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseTime" type="xs:time">
+		<xs:annotation>
+			<xs:documentation>Time the offense is alleged to have occurred.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseTimesAtOrAbout" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>If true, denotes that the time or time range the offense is alleged to have occurred is approximate.  </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseTimeEnd" type="xs:time">
+		<xs:annotation>
+			<xs:documentation>If an offense is alleged to have occurred over a time range, OffenseTimeEnd specifies the time the commission of the offense ended.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OffenseTypeText">
+		<xs:annotation>
+			<xs:documentation>The type of offense (statute, ordinance, rule, etc)</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="Statute"/>
+				<xs:enumeration value="Local Ordinance"/>
+				<xs:enumeration value="Administrative Rule"/>
+				<xs:enumeration value="Pending Offense"/>
+				<xs:enumeration value="Converted Offense"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="OfficerBadgeNumber" type="OfficerBadgeNumberType">
+		<xs:annotation>
+			<xs:documentation>Badge number of the citing officer.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="OfficerCommentText">
+		<xs:annotation>
+			<xs:documentation>Officer's notes about the offense(s) included on the citation.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="CommentType">
+				<xs:maxLength value="8000" fixed="true"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="OfficerNameText" type="OfficerNameType">
+		<xs:annotation>
+			<xs:documentation>Name of the citing officer.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ParkingSpace">
+		<xs:annotation>
+			<xs:documentation>Details to identify a vehicle parking space</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ParkingSpaceType"/>
+				<xs:element ref="ParkingSpaceIdentifier"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ParkingSpaceIdentifier">
+		<xs:annotation>
+			<xs:documentation>Parking space number or parking meter number where cited vehicle located.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ID" type="ID1to30Type"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ParkingSpaceType">
+		<xs:annotation>
+			<xs:documentation> Parking Meter or Parking Space where vehicle cited vehicle located.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="Parking Meter"/>
+				<xs:enumeration value="Parking Space"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="PostedSpeedMeasure" type="xs:positiveInteger">
+		<xs:annotation>
+			<xs:documentation>Legal Speed Limit, may be posted or prescribed by statute or local ordinance</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PredatoryOffenderRegistrationRequiredIndicator" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>If true, offense is subject to predatory offender processing requirements.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PropertyDamageText" type="PropertyDamageTypeCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Must be a value from the enumerated list.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ProsecutingAgencyORI" type="ProsecutingAgencyORIType">
+		<xs:annotation>
+			<xs:documentation>Agency responsible for filing and prosecuting the case.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ReportingAgencyControlNumber" type="ControlNumberType">
+		<xs:annotation>
+			<xs:documentation>Control number (Law Enforcement Case Number) assigned to the incident.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ReportingAgencyORI" type="ReportingAgencyCodeType">
+		<xs:annotation>
+			<xs:documentation>The identifier for the aggency associated with the arrest report.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ReportingOfficial" type="OfficerType">
+		<xs:annotation>
+			<xs:documentation>The officer producing the arrest report.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ReportToDNRIndicator" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>If true, the offense is subject to reporting to the Department of Natural Resources.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ReportToDPSIndicator" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>If true, the offense is subject to reporting to the Department of Public Safety.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="SeverityLevelText" type="OffenseSeverityLevelTypeCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Level of offense, e.g. Felony, Gross Misdeanor.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="Speeding" type="SpeedingType">
+		<xs:annotation>
+			<xs:documentation>Details about the speed recorded and speed limit of the vehicle involved in the incident.  Required for speeding offenses.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="StatuteTypeText" type="SupplementalStatuteTypeCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Specifies type of statute as indicated in statute service.  Most are Both Charging and Penalty.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="SubmittingAgencyNameText">
+		<xs:annotation>
+			<xs:documentation>Name or description of submitting system assigned by submitting agency.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="60"/>
+				<xs:minLength value="1"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="TargetedMisdemeanorIndicator" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>If true, statute meets requirements as a targeted misdemeanor for reporting purposes.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ThirdViolationIndicator" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Determined by law enforcement on certain statutes.  Court will use to validate level of offense.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TicketDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date the ticket was issued to the citee.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TrialDemand">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="TrialDemandType"/>
+				<xs:element ref="TrialDemandDate"/>
+				<xs:element ref="TrialDemandAction"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TrialDemandAction" type="TrialDemandActionType">
+		<xs:annotation>
+			<xs:documentation>Indicator if the defendant has entered a trial demand or waiver of trial.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TrialDemandDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date associated with a trial demand.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TrialDemandType" type="TrialDemandTypeType">
+		<xs:annotation>
+			<xs:documentation>Indicates if defendant has requested either a speedy or jury trial.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="VehicleOverweightMeasure" type="VehicleOverweightMeasureType">
+		<xs:annotation>
+			<xs:documentation>The number of pounds overweight in a vehicle weight violation.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WeatherConditionText" type="WeatherConditionCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Special weather conditions observed by officer.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:annotation>
+		<xs:documentation>=============                             Vehicle</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="VehicleModelTextType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="VehicleIDType">
+		<xs:sequence>
+			<xs:element name="ID">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="17"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VehicleLicensePlateType">
+		<xs:annotation>
+			<xs:documentation>Details of the vehicle license plate.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PlateState" type="StateCodeType">
+				<xs:annotation>
+					<xs:documentation>State or government agency that issued the vehicle license plate.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PlateNumber">
+				<xs:annotation>
+					<xs:documentation>License plate number.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ID" type="ID1to10Type"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CommercialVehicleIndicator">
+		<xs:annotation>
+			<xs:documentation>If true, indicates the vehicle is registered as a commercial vehicle. </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:boolean"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="HazardousMaterialsIndicator">
+		<xs:annotation>
+			<xs:documentation>If true, indicates hazardous materials were involved in the incident.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:boolean"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="VehicleColorText" type="VehicleColorCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Primary color of the vehicle.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="VehicleID" type="VehicleIDType">
+		<xs:annotation>
+			<xs:documentation>A unique combination of alphanumeric characters that identifies a specific vehicle. A vehicle identification number is normally imprinted by the manufacturer and attached to the vehicle in specific locations, but is occasionally assigned by titling or registration agencies. Sometimes referred to as a VIN, VIN number.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="VehicleLicensePlate">
+		<xs:annotation>
+			<xs:documentation>Details of the vehicle license plate.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="VehicleLicensePlateType">
+					<xs:sequence>
+						<xs:element name="PlateExpiration" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Month and Year the license plate registration expires.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="PlateExpirationMonth" minOccurs="0">
+										<xs:simpleType>
+											<xs:restriction base="xs:int">
+												<xs:minInclusive value="1"/>
+												<xs:maxInclusive value="12"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="PlateExpirationYear" type="xs:gYear"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="VehicleMakeText" type="VehicleMakeCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Manufacturer of the vehicle involved in the incident.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="VehicleModelText">
+		<xs:annotation>
+			<xs:documentation>Name assigned by the manufacturuer that identifies the specific vehicle. </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="VehicleModelTextType"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="VehicleTypeText" type="VehicleTypeCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Type of vehicle involved in the incident.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="VehicleYear" type="xs:gYear">
+		<xs:annotation>
+			<xs:documentation>Vehicle model year assigned by the manufacturer.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:annotation>
+		<xs:documentation>=============                              Plea</xs:documentation>
+	</xs:annotation>
+	<xs:element name="PleaDate" type="xs:date"/>
+	<xs:element name="PleaJudge" type="JudicialOfficialType"/>
+	<xs:element name="PleaDescriptionText" type="PleaDescriptionCodeTextType" nillable="true"/>
+	<xs:element name="PleaComment" type="CommentType"/>
+	<xs:element name="PleaAmended" type="PleaAmendedType"/>
+	<xs:element name="PleaAmendedReasonText" type="AmendmentReasonPleaTypeCodeTextType"/>
+	<xs:element name="PleaAmendedDate" type="xs:date"/>
+	<xs:complexType name="PleaAmendedType">
+		<xs:sequence>
+			<xs:element ref="PleaAmendedReasonText" maxOccurs="unbounded"/>
+			<xs:element ref="PleaAmendedDate"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PleaType">
+		<xs:sequence>
+			<xs:element ref="PleaDate"/>
+			<xs:element ref="PleaJudge" minOccurs="0"/>
+			<xs:element ref="PleaDescriptionText"/>
+			<xs:element ref="PleaComment" minOccurs="0"/>
+			<xs:element ref="PleaAmended" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ChargePlea" type="PleaType"/>
+	<xs:annotation>
+		<xs:documentation>=============                              Disposition</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ChargeDispositionDate" type="xs:date"/>
+	<xs:element name="ChargeDispositionJudge" type="JudicialOfficialType"/>
+	<xs:element name="ChargeDispositionText" type="ChargeDispositionCodeTextType"/>
+	<xs:element name="ChargeDispositionSeverityLevel" type="OffenseSeverityLevelTypeCodeTextType"/>
+	<xs:element name="ChargeDispositionAmendedReasonText" type="AmendmentReasonCriminalDispositionTypeCodeTextType"/>
+	<xs:element name="ChargeDispositionComment" type="CommentType"/>
+	<xs:annotation>
+		<xs:documentation>=============                              Sentence</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="DelinquencyDispositionComponentType">
+		<xs:complexContent>
+			<xs:extension base="DispositionComponentType">
+				<xs:sequence>
+					<xs:element name="DispositionConditionSet" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="DispositionConditionElement" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:complexContent>
+											<xs:extension base="DispositionConditionElementType"/>
+										</xs:complexContent>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="RelatedParty" type="RelatedPartyType" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="DispositionComponentValues">
+		<xs:annotation>
+			<xs:documentation>Set of information about a disposition.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="FieldName" type="DispositionComponentValueTypeCodeTextType">
+					<xs:annotation>
+						<xs:documentation>Describes the type of dispositional information.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="FieldValue" type="CommentType">
+					<xs:annotation>
+						<xs:documentation>Contains the actual disposition information.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="IsWaivedIndicator" type="xs:boolean" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="DispositionComponentType">
+		<xs:sequence>
+			<xs:element name="DispositionComponentTypeText" type="DispositionSentenceTypeCodeTextType">
+				<xs:annotation>
+					<xs:documentation>Describes the specific Sentence Condition, Durational, Cost, Restitution, e.g. Local Confinement, Fees, Commit to Commissioner of Corrections. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="DispositionComponentValues" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="DispositionDurationalElement" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="DispositionRestitutionElement" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="RestitutionRecipient">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="partyKey" type="xs:positiveInteger">
+											<xs:annotation>
+												<xs:documentation>Odyssey currently does not provide the partyKey of the Restitution Recipient but a request for this is pending.  For now it is optional and cannot be provided, but once the data is available the attribute will become mandatory.</xs:documentation>
+											</xs:annotation>
+										</xs:attribute>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="RestitutionAmount" type="CurrencyType"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="dispositionComponentKey" type="xs:positiveInteger">
+			<xs:annotation>
+				<xs:documentation>Pending request to Tyler for Integration ID</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="DispositionDurationalElement">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="StartDate" type="xs:date"/>
+				<xs:element name="StartTime" type="xs:time" minOccurs="0"/>
+				<xs:element name="EndDate" type="xs:date" minOccurs="0"/>
+				<xs:element name="EndTime" type="xs:time" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="DispositionConditionElementType">
+		<xs:sequence>
+			<xs:element name="ConditionText" type="ConditionAllTypeCodeTextType"/>
+			<xs:element name="ConditionStartDate" type="xs:date"/>
+			<xs:element name="ConditionEndDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="Comment" type="CommentType" minOccurs="0"/>
+			<xs:element name="Amount" type="CurrencyType" minOccurs="0"/>
+			<xs:element name="DispositionConditionStatus" type="StatusType"/>
+			<xs:element name="ConditionLocationText" type="ConditionAgencyCodeTextType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DispositionStatusType">
+		<xs:sequence>
+			<xs:element name="DispositionStatusDate" type="xs:date"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DurationOfStayType">
+		<xs:sequence>
+			<xs:element name="DurationYears" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="DurationMonths" type="xs:nonNegativeInteger" minOccurs="0"/>
+			<xs:element name="DurationDays" type="xs:nonNegativeInteger" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="PronouncedDate" type="xs:date"/>
+	<xs:element name="SentenceEventText" type="SentenceEventTypeCodeTextType"/>
+	<xs:element name="PronouncingJudge" type="JudicialOfficialType"/>
+	<xs:complexType name="StatusType">
+		<xs:sequence>
+			<xs:element name="StatusDate" type="xs:date"/>
+			<xs:element name="StatusText" type="StatusTextType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="StatusTextType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Active"/>
+			<xs:enumeration value="Satisfied"/>
+			<xs:enumeration value="Closed"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="JuvenileDispositionStatusType">
+		<xs:sequence>
+			<xs:element name="StatusDate" type="xs:date"/>
+			<xs:choice>
+				<xs:element name="StayedJuvenileAdultSentenceStatus">
+					<xs:complexType>
+						<xs:choice>
+							<xs:element name="Imposed" type="xs:boolean"/>
+							<xs:element name="Until21Birthdate" type="xs:date"/>
+							<xs:element name="StayedDuration" type="DurationOfStayType"/>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="StatusText" type="StatusTextType"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SentenceChargeSeverityLevel" type="OffenseSeverityLevelTypeCodeTextType">
+		<xs:annotation>
+			<xs:documentation>The Sentence Serverity Level is determined by provisions in Minnesota law. Odyssey calculates the severity level by applying those provisions to the terms of the sentence imposed by the court. </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:annotation>
+		<xs:documentation>=============                              CaseHeader</xs:documentation>
+	</xs:annotation>
+	<xs:element name="BaseCaseTypeText" type="BaseCaseTypeTextType">
+		<xs:annotation>
+			<xs:documentation>Mid-level categorization of the type of case (e.g., adult, juvenile, civil domestic violence, etc.) </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="CaseAssignmentType">
+		<xs:sequence>
+			<xs:element ref="CourtFileNumber"/>
+			<xs:element ref="CaseLocationText"/>
+			<xs:element name="AssignedDate" type="xs:date"/>
+			<xs:element name="AssignedJudge" type="JudicialOfficialType" minOccurs="0"/>
+			<xs:element name="ReassignmentReason" type="ReassignmentReasonCodeTextType" minOccurs="0"/>
+			<xs:element name="ReassignedDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="ReassignmentComment" type="CommentType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="currentAssignmentIndicator" type="xs:boolean" use="required"/>
+	</xs:complexType>
+	<xs:element name="CaseCategoryText" type="CaseCategoryCodeTextType">
+		<xs:annotation>
+			<xs:documentation>High-level categorization of the type of case (e.g., criminal, civil, family, probate).</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CaseCountyNumber" type="CountyNumberType">
+		<xs:annotation>
+			<xs:documentation>Numeric code representing the county in which the court file is located.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CaseFiledDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>The date that a case was filed with the court.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="CaseHeaderType">
+		<xs:sequence>
+			<xs:element ref="CourtFileNumber"/>
+			<xs:element ref="CaseCountyNumber"/>
+			<xs:element ref="CaseLocationText" minOccurs="0"/>
+			<xs:element ref="BaseCaseTypeText"/>
+			<xs:element ref="CaseCategoryText"/>
+			<xs:element ref="CaseTitle" minOccurs="0"/>
+			<xs:element ref="CaseTypeText"/>
+			<xs:element name="CaseSubTypeText" type="CaseSubTypeCodeTextType" minOccurs="0"/>
+			<xs:element ref="CaseFiledDate"/>
+			<xs:element name="CaseIsConfidential" type="xs:boolean"/>
+			<xs:element name="CaseIsSealed" type="xs:boolean"/>
+			<xs:element name="CaseIsRestricted" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Used only on Family ABO cases.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="CaseStatus" maxOccurs="unbounded"/>
+			<xs:element name="AllCountsDisposed" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>For TV and CR Case Types - denotes that all counts on a case have been disposed.  Used by some consumers to determine their interest in the case.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CaseLocationText" type="CourtLocationCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Describes the county or division where the court file is located.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CaseTitle">
+		<xs:annotation>
+			<xs:documentation>Name or title of the case.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CaseTypeText" type="CaseTypeCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Specific classification of the kind of court case.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CaseStatus">
+		<xs:annotation>
+			<xs:documentation>Indicates the stage of proceedings in processing a case through the court system.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="CaseStatusText" type="CaseStatusTypeCodeTextType"/>
+				<xs:element name="CaseStatusDate" type="xs:date"/>
+				<xs:element name="CaseStatusComment" type="CommentType" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="currentStatusIndicator" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="CountyNumberType">
+		<xs:restriction base="xs:positiveInteger"/>
+	</xs:simpleType>
+	<xs:complexType name="CourtCaseHeaderGroupType">
+		<xs:annotation>
+			<xs:documentation>CourtCaseHeader with optional Group Information - Currently awaits Tyler providing Group Information on with Case data.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="CourtCaseHeaderType">
+				<xs:sequence>
+					<xs:element name="OtherAgencyNumber" type="OtherAgencyNumberType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="Group" type="GroupType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CourtCaseHeaderType">
+		<xs:complexContent>
+			<xs:extension base="CaseHeaderType">
+				<xs:sequence>
+					<xs:element name="CaseAssignment" type="CaseAssignmentType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="CaseFlag" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="CaseFlagText" type="CaseIndicatorTypeCodeTextType"/>
+								<xs:element name="CaseFlagComment" type="CommentType" minOccurs="0"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RelatedCase" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="CourtFileNumber"/>
+								<xs:element name="RelatedCaseReasonText" type="RelatedCaseReasonCodeTextType"/>
+								<xs:element name="RelatedCaseReasonComment" type="CommentType" minOccurs="0"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="CourtFileNumber" type="CourtFileNumberType">
+		<xs:annotation>
+			<xs:documentation>The court assigned identifier for a case within the courts case management system.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="CourtFileNumberType">
+		<xs:annotation>
+			<xs:documentation>Case number</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="30"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CourtJurisdictionORIType">
+		<xs:annotation>
+			<xs:documentation>The ORI of the Court.   Large counties may have multiple subdivisions and will thus have multiple ORI values associated with them.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="JudicialAgencyORIType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CourtJurisdictionORI" type="CourtJurisdictionORIType">
+		<xs:annotation>
+			<xs:documentation>The ORI of the Court.   Large counties may have multiple subdivisions and will thus have multiple ORI values associated with them.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CourtName" type="CourtLocationCodeTextType"/>
+	<xs:element name="OtherAgencyNumber" type="OtherAgencyNumberType">
+		<xs:annotation>
+			<xs:documentation>File numbers issued by other agencies, e.g., Prosecutor File Number or Jail Booking Number. </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="OtherAgencyNumberType">
+		<xs:sequence>
+			<xs:element name="ID">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="30"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="IDTypeText" type="CaseCrossReferenceIdentifierType" minOccurs="0"/>
+			<xs:element name="IDTypeCodeText" type="CaseCrossReferenceIdentifierTypeCodeType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                              Interim Conditions</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ConditionSubjectType">
+		<xs:choice>
+			<xs:element name="PartyReference">
+				<xs:complexType>
+					<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Party" type="PartyNameAddressPhoneEmailType"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="ConditionMoneyType">
+		<xs:sequence>
+			<xs:element name="InterimConditionText" type="ConditionAllTypeCodeTextType" nillable="true"/>
+			<xs:element name="InterimConditionAmount" type="CurrencyType" minOccurs="0"/>
+			<xs:element name="InterimConditionCommentText" type="CommentType" minOccurs="0"/>
+			<xs:element name="InterimConditionLocationText" type="ConditionAgencyCodeTextType" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OrderEventType">
+		<xs:annotation>
+			<xs:documentation>Denotes the establishment of a Court Order</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OrderDate" type="xs:date"/>
+			<xs:element name="OrderExpirationDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="OrderedBy" type="JudicialOfficialType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="orderEventKey" type="xs:positiveInteger"/>
+	</xs:complexType>
+	<xs:complexType name="InterimConditionsOrderType">
+		<xs:complexContent>
+			<xs:extension base="OrderEventType">
+				<xs:sequence>
+					<xs:element name="OrderCommentText" type="CommentType" minOccurs="0"/>
+					<xs:element name="ConditionSubject" type="ConditionSubjectType"/>
+					<xs:element name="InterimCondition" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="ConditionMoneyType"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                             NoContact Order</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="NoContactOrderType">
+		<xs:sequence>
+			<xs:element name="OrderTypeText">
+				<xs:annotation>
+					<xs:documentation>Specifies the type of Order (i.e. Interim Condition, Sentence Condition or Juvenile Sentence Condition)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="30"/>
+						<xs:enumeration value="Interim Condition"/>
+						<xs:enumeration value="Juvenile Sentence Condition"/>
+						<xs:enumeration value="Sentence Condition"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="IssuingCourtLocationText" type="CourtLocationCodeTextType"/>
+			<xs:element name="OrderSubject">
+				<xs:annotation>
+					<xs:documentation>The individual who has been ordered to have no contact</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="PartyBaseType">
+							<xs:sequence>
+								<xs:element name="PersonBirthDate" minOccurs="0" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:simpleContent>
+											<xs:extension base="xs:date">
+												<xs:attribute name="currentBirthdate" type="xs:boolean"/>
+											</xs:extension>
+										</xs:simpleContent>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="PersonSexText" type="GenderTypeCodeTextType" minOccurs="0"/>
+								<xs:element name="PersonRace" nillable="true" minOccurs="0">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="LawEnforcementObservedRaceText" type="RaceTypeCodeTextType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+												<xs:annotation>
+													<xs:documentation>MNCIS stores this race data with the case</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="PartyReportedRaceText" type="RaceTypeCodeTextType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+												<xs:annotation>
+													<xs:documentation>MNCIS stores this data with the Party record</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ProtectedParty" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The individual(s) who are protected by the no contact order.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="PartyNameAddressPhoneEmailType">
+							<xs:sequence>
+								<xs:element name="PersonBirthDate" minOccurs="0" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:simpleContent>
+											<xs:extension base="xs:date">
+												<xs:attribute name="currentBirthdate" type="xs:boolean"/>
+											</xs:extension>
+										</xs:simpleContent>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="PersonSexText" type="GenderTypeCodeTextType" minOccurs="0"/>
+								<xs:element name="PersonRace" nillable="true" minOccurs="0">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="LawEnforcementObservedRaceText" type="RaceTypeCodeTextType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+												<xs:annotation>
+													<xs:documentation>MNCIS stores this race data with the case</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="PartyReportedRaceText" type="RaceTypeCodeTextType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+												<xs:annotation>
+													<xs:documentation>MNCIS stores this data with the Party record</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="OrderStartDate" type="xs:date"/>
+			<xs:element name="OrderEndDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="OrderedBy" type="JudicialOfficialType" minOccurs="0"/>
+			<xs:element name="OrderCommentText" type="CommentType" minOccurs="0"/>
+			<xs:element name="ConditionText" type="ConditionNoContactTypeCodeTextType"/>
+			<xs:element name="ConditionCommentText" type="CommentType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="orderEventKey" type="xs:positiveInteger">
+			<xs:annotation>
+				<xs:documentation>This attribute is used only if the order is the result of an Interim Condition order</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="sentenceEventKey" type="xs:positiveInteger">
+			<xs:annotation>
+				<xs:documentation>This attribute is used only used if the order is the result of sentence conditions.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="sentenceDelinquencyDispositionKey" type="xs:positiveInteger">
+			<xs:annotation>
+				<xs:documentation>This attribute is used only used if the order is the result of sentence conditions.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                              Interim Placement</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="JuvenileInterimPlacementOrderType">
+		<xs:complexContent>
+			<xs:extension base="OrderEventType">
+				<xs:sequence>
+					<xs:element name="Placement" type="JuvenilePlacementType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="JuvenilePlacementType">
+		<xs:sequence>
+			<xs:element name="PlacementSubject">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="ChildReference">
+							<xs:complexType>
+								<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="ChildDelinquent" type="ChildDelinquentType"/>
+						<xs:element name="ChildNonDelinquent" type="ChildNonDelinquentType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PlacementTypeText" type="PlacementTypeCodeTextType"/>
+			<xs:element name="PlacementStartDate" type="xs:date"/>
+			<xs:element name="PlacementEndDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="StayOfPlacement" minOccurs="0">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="IndeterminateStayIndicator" type="xs:boolean"/>
+						<xs:element name="DurationOfStay" type="DurationOfStayType">
+							<xs:annotation>
+								<xs:documentation>Where a DurationOfStay Element exists there must be at least one of its "durational" elements with a  non-zero value.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+					<xs:attribute name="stayForYears" type="xs:nonNegativeInteger">
+						<xs:annotation>
+							<xs:documentation>These "stayFor" values specify the duration of any stay of the Stay of Placement (similar to a stay of execution of a criminal sentence).  The duration of the actual Stay of Placement are found in the Duration of Stay Complex Elements and their values.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="stayForMonths" type="xs:nonNegativeInteger"/>
+					<xs:attribute name="stayForDays" type="xs:nonNegativeInteger"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PlacementStatus" type="StatusType" minOccurs="0"/>
+			<xs:element name="PlacementLocation" minOccurs="0">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="AgencyText" type="JuvenilePlacementAgencyTypeCodeTextType"/>
+						<xs:element name="PlacementParty">
+							<xs:complexType>
+								<xs:sequence minOccurs="0">
+									<xs:element name="PartyDetail" type="PartyNameAddressPhoneEmailType"/>
+								</xs:sequence>
+								<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="LocationText">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="255"/>
+									<xs:minLength value="1"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PlacementComment" type="CommentType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="placementKey" type="xs:positiveInteger"/>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                              Hearing</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="HearingTrialType">
+		<xs:sequence>
+			<xs:element name="CourtName" type="CourtLocationCodeTextType">
+				<xs:annotation>
+					<xs:documentation>The code attribute will always contain the same value as JudicialAgencyORI/ID. This redundancy was an oversight.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="JudicialAgencyORI">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ID" type="JudicialAgencyORIType">
+							<xs:annotation>
+								<xs:documentation>This attribute will always contain the same value as CourtName@code. This redundancy was an oversight. </xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="HearingTypeText" type="HearingTypeCodeTextType"/>
+		</xs:sequence>
+		<xs:attribute name="hearingKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="CourtSessionNameTextType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="60"/>
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="SettingType">
+		<xs:annotation>
+			<xs:documentation>New container type from Tyler's IXML</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CourtCalendarNameText" type="CourtCalendarNameCodeTextType"/>
+			<xs:element name="CourtSessionNameText" minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="CourtSessionNameTextType">
+							<xs:attribute name="sessionKey" type="xs:positiveInteger" use="required"/>
+							<xs:attribute name="sessionTypeCode" type="HearingSessionTypeCodeType"/>
+							<xs:attribute name="sessionTypeText" type="HearingSessionTypeTextType"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="HearingDateTimes">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="HearingDatetimeStart" type="xs:dateTime"/>
+						<xs:element name="HearingDatetimeEnd" type="xs:dateTime" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SettingStatus" type="HearingStatusType"/>
+			<xs:element name="HearingLocation" type="HearingLocationCodeTextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Court Resource where Resource Type = "Location"</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PresidingJudge" type="JudicialOfficialType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Court Resource where Resource Type = "Judicial Officer"  Policy Issue: How to restrict access where court does not want to provide judge name to prevent judge shopping?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InterpreterRequired" type="xs:boolean"/>
+			<xs:element name="InterpreterLanguage" type="LanguageTypeCodeTextType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="settingKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="RescheduledType">
+		<xs:sequence>
+			<xs:element name="RescheduleReasonText" type="SettingRescheduledReasonCodeTextType" minOccurs="0"/>
+			<xs:element name="RescheduleCommentText" type="CommentType" minOccurs="0"/>
+			<xs:element name="RescheduleRequestedBy" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CourtSessionType"/>
+	<xs:complexType name="HearingTrialSettingType">
+		<xs:annotation>
+			<xs:documentation>A single hearing or trial which may have multiple settings and therefore multiple setting instances.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="HearingTrialType">
+				<xs:sequence>
+					<xs:element name="Setting" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="SettingType">
+									<xs:choice minOccurs="0">
+										<xs:element name="Held">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="HearingTypeText" type="HearingTypeCodeTextType"/>
+													<xs:element name="CourtReporter" type="CourtReporterCodeTextType" minOccurs="0"/>
+													<xs:element name="HearingResultCommentText" type="xs:string" minOccurs="0"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Rescheduled">
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:extension base="RescheduledType">
+														<xs:sequence>
+															<xs:element name="NewSettingReference">
+																<xs:complexType>
+																	<xs:attribute name="settingKey" use="required"/>
+																</xs:complexType>
+															</xs:element>
+														</xs:sequence>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Cancelled">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="CancelledReasonText" type="HearingSettingCancellationReasonCodeTextType"/>
+													<xs:element name="CancelledCommentText" type="CommentType" minOccurs="0"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:choice>
+								</xs:extension>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="HearingStatusType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Scheduled"/>
+			<xs:enumeration value="Cancelled"/>
+			<xs:enumeration value="Deleted"/>
+			<xs:enumeration value="Reset"/>
+			<xs:enumeration value="Continued"/>
+			<xs:enumeration value="Held"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CourtReporterTextType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="60"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="CourtReporterCodeTextType">
+		<xs:simpleContent>
+			<xs:extension base="CourtReporterTextType">
+				<xs:attribute name="code">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="10"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                              Case Events</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="CourtCaseEventType">
+		<xs:sequence>
+			<xs:element name="CaseEventText" type="CaseEventTypeCodeTextType"/>
+			<xs:element ref="CaseEventDate"/>
+			<xs:element ref="CaseEventTime" minOccurs="0"/>
+			<xs:element name="CaseEventJudge" type="JudicialOfficialType" minOccurs="0"/>
+			<xs:element name="CaseEventDueDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="CaseEventCompletedDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="CaseEventCommentText" type="CommentType" minOccurs="0"/>
+			<xs:element name="PartyReference" type="PartyReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="courtCaseEventKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:element name="CaseEventDate" type="xs:date"/>
+	<xs:element name="CaseEventTime" type="xs:time"/>
+	<xs:element name="CaseEventAmount" type="CurrencyType">
+		<xs:annotation>
+			<xs:documentation>Dollar amount associated with event.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="PartyReferenceType">
+		<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="RelatedChargeType">
+		<xs:attribute name="chargeKey"/>
+	</xs:complexType>
+	<xs:complexType name="CustodyReleaseOrderEventType">
+		<xs:complexContent>
+			<xs:extension base="CourtCaseEventType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                              Judge</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="JudicialOfficialType">
+		<xs:annotation>
+			<xs:documentation>Abstract Base Type used to create more specific types controlling various judge elements</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="JudgeID" type="JudgeIDType"/>
+			<xs:element name="JudgeName" type="PersonNameType"/>
+			<xs:element name="JudicialAgencyORI" type="JudicialAgencyORIIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The official Judicial Chambers for the designated judge by ORI Identifier.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="JudgeIDType">
+		<xs:sequence>
+			<xs:element name="ID" type="JudgeAllType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="JudicialAgencyORIIDType">
+		<xs:sequence>
+			<xs:element name="ID" type="JudicialAgencyORIType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                              Judgment</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ConditionType">
+		<xs:sequence>
+			<xs:element name="EffectiveDate" type="xs:date"/>
+			<xs:element name="ExpirationDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="ConditionText" type="ConditionAllTypeCodeTextType"/>
+			<xs:element name="ConditionCommentText" type="CommentType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Not used for Juvenile Conditions; See ConditionSetComment for Juveniles.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ConditionStatus" type="StatusType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="JudgmentInterestType">
+		<xs:annotation>
+			<xs:documentation>Enumerates the various judgment types having their own interest rates.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Other"/>
+			<xs:enumeration value="Real/Personal Property"/>
+			<xs:enumeration value="State Court Administrator"/>
+			<xs:enumeration value="Sales/Excise/Income Tax"/>
+			<xs:enumeration value="Support"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="VisitationType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:complexType name="PropertyAwardType">
+		<xs:sequence>
+			<xs:element name="PropertyTypeText" type="PropertyCodeTextType"/>
+			<xs:element name="PropertyDescriptionText" type="CommentType" minOccurs="0"/>
+			<xs:element name="VehicleIdentificationNumber" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The identification for the vehicle (VIN).  This will be included only if the PropertyTypeText is Motor Vehicle.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+						<xs:minLength value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MonetaryAwardType">
+		<xs:sequence>
+			<xs:element name="OriginalPrincipalDueAmount"/>
+			<xs:element name="CurrentPrincipalDueAmount" minOccurs="0"/>
+			<xs:element name="CurrentCostsDueAmount" minOccurs="0"/>
+			<xs:element name="CurrentInterestDueAmount" minOccurs="0"/>
+			<xs:element name="CurrentBalance" minOccurs="0">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="CurrentBalanceDueAmount" type="CurrencyType"/>
+						<xs:element name="CurrentBalanceDueText" type="BalanceDueCodeTextType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InterestRateTypeText"/>
+			<xs:element name="InterestStay" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="StayDate" type="xs:date"/>
+						<xs:element name="RestartDate" type="xs:date" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WritOfExecutionType">
+		<xs:sequence>
+			<xs:element name="WritTypeText" type="WritTypeCodeTextType"/>
+			<xs:element name="WritIssuedDate" type="xs:date"/>
+			<xs:element name="WritCommentText" type="CommentType" minOccurs="0"/>
+			<xs:element name="IssuingJurisdictionText" type="CourtLocationCodeTextType"/>
+			<xs:element name="Returned" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ReturnedDate" type="xs:date"/>
+						<xs:element name="ReturnedBy">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="ReturnedByTypeText" type="WritReturnedByCodeTextType"/>
+									<xs:element name="NameText" minOccurs="0">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:minLength value="1"/>
+												<xs:maxLength value="100"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Details">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Monetary">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="CurrentPrincipalDueAmount" type="CurrencyType"/>
+									<xs:element name="CurrentCostsDueAmount" type="CurrencyType"/>
+									<xs:element name="CurrentInterestDueAmount" type="CurrencyType"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="writOfExecutionKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="BalanceType">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="PrincipalAmount" type="CurrencyType"/>
+				<xs:element name="PrincipalText"/>
+			</xs:choice>
+			<xs:element name="CostsDue" type="CurrencyType"/>
+			<xs:element name="InterestTypeText" type="JudgmentInterestType"/>
+			<xs:element name="InterestDue" type="CurrencyType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="AwardTypeTextType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Monetary Award"/>
+			<xs:enumeration value="Property Award"/>
+			<xs:enumeration value="Monetary Award and/or Property Award"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AwardTypeCodeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="M"/>
+			<xs:enumeration value="P"/>
+			<xs:enumeration value="PM"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="AwardTypeCodeTextType">
+		<xs:simpleContent>
+			<xs:extension base="AwardTypeTextType">
+				<xs:attribute name="code" type="AwardTypeCodeType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="WritTypeTextType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Personal or Real Property"/>
+			<xs:enumeration value="Money or Personal Property"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="WritTypeCodeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="P"/>
+			<xs:enumeration value="M"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="WritTypeCodeTextType">
+		<xs:simpleContent>
+			<xs:extension base="WritTypeTextType">
+				<xs:attribute name="code" type="WritTypeCodeType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="BalanceDueTextType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Inactive"/>
+			<xs:enumeration value="Satisfied"/>
+			<xs:enumeration value="Expired"/>
+			<xs:enumeration value="Bankruptcy"/>
+			<xs:enumeration value="Dismissed"/>
+			<xs:enumeration value="Vacated"/>
+			<xs:enumeration value="Renewed"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BalanceDueCodeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="IN"/>
+			<xs:enumeration value="SA"/>
+			<xs:enumeration value="EX"/>
+			<xs:enumeration value="BA"/>
+			<xs:enumeration value="DI"/>
+			<xs:enumeration value="VA"/>
+			<xs:enumeration value="RE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="BalanceDueCodeTextType">
+		<xs:simpleContent>
+			<xs:extension base="BalanceDueTextType">
+				<xs:attribute name="code" type="BalanceDueCodeType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="FrequencyTypeTextType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Bimonthly"/>
+			<xs:enumeration value="Biweekly"/>
+			<xs:enumeration value="Day(s)"/>
+			<xs:enumeration value="Month(s)"/>
+			<xs:enumeration value="One Time"/>
+			<xs:enumeration value="Quarter(s)"/>
+			<xs:enumeration value="Semiannually"/>
+			<xs:enumeration value="Semimonthly"/>
+			<xs:enumeration value="Semiweekly"/>
+			<xs:enumeration value="Week(s)"/>
+			<xs:enumeration value="Year(s)"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FrequencyTypeCodeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BIMONTH"/>
+			<xs:enumeration value="BIWEEK"/>
+			<xs:enumeration value="DAY"/>
+			<xs:enumeration value="MONTH"/>
+			<xs:enumeration value="ONETIME"/>
+			<xs:enumeration value="QUARTER"/>
+			<xs:enumeration value="SEMIYEAR"/>
+			<xs:enumeration value="SEMIMONTH"/>
+			<xs:enumeration value="SEMIWEEK"/>
+			<xs:enumeration value="WEEK"/>
+			<xs:enumeration value="YEAR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="FrequencyTypeCodeTextType">
+		<xs:simpleContent>
+			<xs:extension base="FrequencyTypeTextType">
+				<xs:attribute name="code" type="FrequencyTypeCodeType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="WritReturnedByTextType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Sheriff"/>
+			<xs:enumeration value="Attorney"/>
+			<xs:enumeration value="Other"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="WritReturnedByCodeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="S"/>
+			<xs:enumeration value="A"/>
+			<xs:enumeration value="O"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="WritReturnedByCodeTextType">
+		<xs:simpleContent>
+			<xs:extension base="WritReturnedByTextType">
+				<xs:attribute name="code" type="WritReturnedByCodeType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="JudgmentAwardSatisfactionType">
+		<xs:sequence>
+			<xs:element name="SatisfactionTypeText" type="JudgmentAwardSatisfactionTypeCodeTextType"/>
+			<xs:element name="DocumentTypeText" type="JudgmentAwardSatisfactionDocumentTypeCodeTextType"/>
+			<xs:element name="CollectionDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="CollectedAmounts" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TotalCollectedAmount" type="CurrencyType" minOccurs="0"/>
+						<xs:element name="PrincipalCollectedAmount" type="CurrencyType" minOccurs="0"/>
+						<xs:element name="CostsCollectedAmount" type="CurrencyType" minOccurs="0"/>
+						<xs:element name="InterestCollectedAmount" type="CurrencyType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="IncurredCosts" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="CostTypeText" type="JudgmentAwardSatisfactionCostsTypeCodeTextType"/>
+						<xs:element name="CostDate" type="xs:date"/>
+						<xs:element name="Amount" type="CurrencyType"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="writOfExecutionKey" type="xs:positiveInteger">
+			<xs:annotation>
+				<xs:documentation>Link to the associated writ if this satisfaction apples to a writ of execution.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="JudgmentSupportType">
+		<xs:sequence>
+			<xs:element name="SupportTypeText" type="JudgmentSupportTypeCodeTextType"/>
+			<xs:element name="ObligorPayor">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="PartyNameType">
+							<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ObligeePayee">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="PartyNameType">
+							<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="OnBehalfOf" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="PartyNameAddressPhoneEmailType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SupportAward" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Amount" type="CurrencyType"/>
+						<xs:element name="AmountFrequencyText" type="FrequencyTypeCodeTextType"/>
+						<xs:element name="MethodTypeText" type="JudgmentSupportMethodCodeTextType" minOccurs="0"/>
+						<xs:element name="MethodFrequencyText" type="FrequencyTypeCodeTextType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Cost" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="CostTypeText" type="JudgmentSupportCostsCodeTextType"/>
+						<xs:choice>
+							<xs:element name="Amount" type="CurrencyType"/>
+							<xs:element name="Percent" type="xs:double"/>
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="MedicalInsurance" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ObligorPayor">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="PartyNameType">
+										<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="OnBehalfOf" type="PartyNameAddressPhoneEmailType" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DentalInsurance" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ObligorPayor">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="PartyNameType">
+										<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="OnBehalfOf" type="PartyNameAddressPhoneEmailType" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="JudgmentAwardType">
+		<xs:sequence>
+			<xs:element name="AwardTypeText" type="AwardTypeCodeTextType"/>
+			<xs:element name="Debtor" type="PartyDetailType" maxOccurs="unbounded"/>
+			<xs:element name="Creditor" type="PartyDetailType" maxOccurs="unbounded"/>
+			<xs:element name="AssigneeReference" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="EnteredDate" type="xs:date"/>
+			<xs:element name="DocketedDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="DocketedTime" type="xs:time" minOccurs="0"/>
+			<xs:element name="ChildSupportJudgmentIndicator" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="ExpiresDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="Inactive" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="InactiveDate" type="xs:date"/>
+						<xs:element name="InactiveReasonText" type="JudgmentInactiveReasonCodeTextType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SatisfiedDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="Details">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Monetary" type="MonetaryAwardType" minOccurs="0"/>
+						<xs:element name="Property" type="PropertyAwardType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Satisfaction" type="JudgmentAwardSatisfactionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="WritOfExecution" type="WritOfExecutionType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="JudgmentCustodyType">
+		<xs:sequence>
+			<xs:element name="CustodyDescriptionText" type="PlacementType"/>
+			<xs:element name="CustodySubject" type="SubjectType" maxOccurs="unbounded"/>
+			<xs:element name="AwardedTo" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="AwardedToPartyReference">
+							<xs:complexType>
+								<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="AwardedToParty" type="PartyNameAddressPhoneEmailType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CustodyCommentText" type="CommentType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="JudgmentComponentValueType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ConversionCost"/>
+			<xs:enumeration value="ConversionDate"/>
+			<xs:enumeration value="ConversionInterest"/>
+			<xs:enumeration value="ConversionPrincipal"/>
+			<xs:enumeration value="TEXT"/>
+			<xs:enumeration value="cboCUSTType"/>
+			<xs:enumeration value="cboJUDawardReason"/>
+			<xs:enumeration value="cboJUDintRateType"/>
+			<xs:enumeration value="cboPLCMTLocation"/>
+			<xs:enumeration value="cboPLCMTType"/>
+			<xs:enumeration value="cboPROPType"/>
+			<xs:enumeration value="cboREIMBType"/>
+			<xs:enumeration value="cboSUPPAmtFreq"/>
+			<xs:enumeration value="cboSUPPMethod"/>
+			<xs:enumeration value="cboSUPPMethodFreq"/>
+			<xs:enumeration value="cboSUPPType"/>
+			<xs:enumeration value="cboVISITType"/>
+			<xs:enumeration value="dbCMTMTEndDate"/>
+			<xs:enumeration value="dbCMTMTReportDate"/>
+			<xs:enumeration value="dbCMTMTStartDate"/>
+			<xs:enumeration value="dbJUDdateDocketed"/>
+			<xs:enumeration value="dbJUDdateEntered"/>
+			<xs:enumeration value="dbJUDdateExpires"/>
+			<xs:enumeration value="dbJUDdateInactive"/>
+			<xs:enumeration value="dbJUDtimeDocketed"/>
+			<xs:enumeration value="dbPLCMTEndDate"/>
+			<xs:enumeration value="dbPLCMTStartDate"/>
+			<xs:enumeration value="dbPROPRecordedDate"/>
+			<xs:enumeration value="dbPROPSatisfiedDate"/>
+			<xs:enumeration value="dbPROPStartDate"/>
+			<xs:enumeration value="dbREIMBDueDate"/>
+			<xs:enumeration value="dbREIMBStartDate"/>
+			<xs:enumeration value="dbSUPPEffDate"/>
+			<xs:enumeration value="mltpCMTMTConditions"/>
+			<xs:enumeration value="mltpCMTMTFacilitys"/>
+			<xs:enumeration value="mskCMTMTDays"/>
+			<xs:enumeration value="mskCMTMTMonths"/>
+			<xs:enumeration value="mskCMTMTYears"/>
+			<xs:enumeration value="mskJUDoriginalPrincipal"/>
+			<xs:enumeration value="mskREIMBAmount"/>
+			<xs:enumeration value="mskSUPPAmount"/>
+			<xs:enumeration value="rdoCMTMTIndeterminate"/>
+			<xs:enumeration value="rdoCMTMTTerm"/>
+			<xs:enumeration value="sbxCONDFJparty"/>
+			<xs:enumeration value="sbxCONDparty"/>
+			<xs:enumeration value="sbxCUSTAward"/>
+			<xs:enumeration value="sbxCUSTChild"/>
+			<xs:enumeration value="sbxJUDpartyAsgn"/>
+			<xs:enumeration value="sbxJUDpartyCred"/>
+			<xs:enumeration value="sbxJUDpartyDebt"/>
+			<xs:enumeration value="sbxPARTParties"/>
+			<xs:enumeration value="sbxPLCMTLocation"/>
+			<xs:enumeration value="sbxPLCMTOf"/>
+			<xs:enumeration value="sbxPROPAgainst"/>
+			<xs:enumeration value="sbxPROPFavor"/>
+			<xs:enumeration value="sbxREIMBObligorPayor"/>
+			<xs:enumeration value="sbxSUPPDenBehalf"/>
+			<xs:enumeration value="sbxSUPPDenPayor"/>
+			<xs:enumeration value="sbxSUPPMedBehalf"/>
+			<xs:enumeration value="sbxSUPPMedPayor"/>
+			<xs:enumeration value="sbxSUPPSuppBehalf"/>
+			<xs:enumeration value="sbxSUPPSuppPayee"/>
+			<xs:enumeration value="sbxSUPPSuppPayor"/>
+			<xs:enumeration value="sbxVISITChild"/>
+			<xs:enumeration value="sbxVISITGranted"/>
+			<xs:enumeration value="txtCMTMTComment"/>
+			<xs:enumeration value="txtCONDFJcomment"/>
+			<xs:enumeration value="txtCONDcomment"/>
+			<xs:enumeration value="txtCUSTComment"/>
+			<xs:enumeration value="txtJUDcomment"/>
+			<xs:enumeration value="txtPARTComment"/>
+			<xs:enumeration value="txtPLCMTComment"/>
+			<xs:enumeration value="txtPLCMTLocation"/>
+			<xs:enumeration value="txtPLCMTTimeStampAdded"/>
+			<xs:enumeration value="txtPROPDescription"/>
+			<xs:enumeration value="txtPROPVin"/>
+			<xs:enumeration value="txtREIMBObligeePayee"/>
+			<xs:enumeration value="txtVISITComment"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="JudgmentEventType">
+		<xs:sequence>
+			<xs:element name="JudgmentEventTypeText" type="JudgmentEventTypeType"/>
+			<xs:element name="JudgmentEventDate" type="xs:date"/>
+			<xs:element name="IssuingJudge" type="JudicialOfficialType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="JuvenileJudgmentType">
+		<xs:annotation>
+			<xs:documentation>This element represents a judgment in a family case that falls within the jurisdiction of Juvenile Court. It replaces the JuvenileNonMonetaryJudgment from Version 1.0.0.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="JudgmentEventType">
+				<xs:sequence>
+					<xs:element name="FinalPlacement" type="JuvenilePlacementType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="ConditionSet" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Condition" type="ConditionType" minOccurs="0" maxOccurs="unbounded"/>
+								<xs:element name="ConditionSubject" type="ConditionSubjectType" maxOccurs="unbounded"/>
+								<xs:element name="ConditionSetCommentText" type="CommentType" minOccurs="0"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Custody" type="JudgmentCustodyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="Visitation" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="VisitationDescriptionText" type="VisitationType"/>
+								<xs:element name="VisitationSubject" type="SubjectType" maxOccurs="unbounded"/>
+								<xs:element name="GrantedTo" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:choice>
+											<xs:element name="GrantedToPartyReferenceID">
+												<xs:complexType>
+													<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="GrantedToParty" type="PartyNameAddressPhoneEmailType"/>
+										</xs:choice>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="VisitationCommentText" type="CommentType" minOccurs="0"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="JudgmentSubject" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ChildNonDelinquent" type="ChildNonDelinquentType" minOccurs="0" maxOccurs="unbounded"/>
+								<xs:element name="ParentGuardianCustodian" type="ParentGuardianCustodianType" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Reimbursement" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="StartDate" type="xs:date"/>
+								<xs:element name="DueDate" type="xs:date" minOccurs="0"/>
+								<xs:element name="ReimbursementType">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="Costs to county"/>
+											<xs:enumeration value="Court-appointed attorney fees"/>
+											<xs:enumeration value="Guardian Ad Litem costs"/>
+											<xs:enumeration value="Other"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:element name="ObligorPayor" type="PartyNameType"/>
+								<xs:element name="ObligeePayee" type="xs:string" minOccurs="0"/>
+								<xs:element name="Amount" type="CurrencyType" minOccurs="0"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="AmendedJudgment" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="AmendedReasonText" type="AmendmentReasonJudgmentType"/>
+								<xs:element name="AmendedDate" type="xs:date"/>
+								<xs:element name="JudgmentReference">
+									<xs:annotation>
+										<xs:documentation>Points back to the original version of the judgment that was  amended.  By following this attribute value you can trace the full history of a judgment.</xs:documentation>
+									</xs:annotation>
+									<xs:complexType>
+										<xs:attribute name="judgmentKey" type="xs:positiveInteger" use="required"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="judgmentKey" type="xs:positiveInteger" use="required">
+					<xs:annotation>
+						<xs:documentation>References a set of detailed information about the judgment.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FamilyJudgmentType">
+		<xs:annotation>
+			<xs:documentation>This element represents a judgment in a family case that does not fall within the jurisdiction of Juvenile Court.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="JudgmentEventType">
+				<xs:sequence>
+					<xs:element name="ConditionSet" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Condition" type="ConditionType" minOccurs="0" maxOccurs="unbounded"/>
+								<xs:element name="ConditionSubject" type="ConditionSubjectType" maxOccurs="unbounded"/>
+								<xs:element name="ConditionSetCommentText" type="CommentType" minOccurs="0"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Custody" type="JudgmentCustodyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="Visitation" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="VisitationDescriptionText" type="VisitationType"/>
+								<xs:element name="VisitationSubject" type="SubjectType" maxOccurs="unbounded"/>
+								<xs:element name="GrantedTo" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:choice>
+											<xs:element name="GrantedToPartyReferenceID">
+												<xs:complexType>
+													<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="GrantedToParty" type="PartyNameAddressPhoneEmailType"/>
+										</xs:choice>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="VisitationCommentText" type="CommentType" minOccurs="0"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="JudgmentSubject" type="PartyNameAddressPhoneEmailType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="Reimbursement" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="StartDate" type="xs:date"/>
+								<xs:element name="DueDate" type="xs:date" minOccurs="0"/>
+								<xs:element name="ReimbursementType">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="Costs to county"/>
+											<xs:enumeration value="Court-appointed attorney fees"/>
+											<xs:enumeration value="Guardian Ad Litem costs"/>
+											<xs:enumeration value="Other"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:element name="ObligorPayor">
+									<xs:complexType>
+										<xs:complexContent>
+											<xs:extension base="PartyNameType">
+												<xs:attribute name="partyKey" type="xs:positiveInteger" use="required"/>
+											</xs:extension>
+										</xs:complexContent>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="ObligeePayee" type="xs:string" minOccurs="0"/>
+								<xs:element name="Amount" type="CurrencyType" minOccurs="0"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Award" type="JudgmentAwardType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="Support" type="JudgmentSupportType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="AmendedJudgment" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="AmendedReasonText" type="AmendmentReasonJudgmentType"/>
+								<xs:element name="AmendedDate" type="xs:date"/>
+								<xs:element name="JudgmentReference">
+									<xs:annotation>
+										<xs:documentation>Points back to the original version of the judgment that was  amended.  By following this attribute value you can trace the full history of a judgment.</xs:documentation>
+									</xs:annotation>
+									<xs:complexType>
+										<xs:attribute name="judgmentKey" type="xs:positiveInteger" use="required"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="judgmentKey" type="xs:positiveInteger" use="required">
+					<xs:annotation>
+						<xs:documentation>References a set of detailed information about the judgment.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                              Warrant</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="WarrantNumberType">
+		<xs:annotation>
+			<xs:documentation>Warrant number</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="30"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WarrantConditionType">
+		<xs:sequence>
+			<xs:element name="WarrantConditionText" type="ConditionWarrantTypeCodeTextType" nillable="true"/>
+			<xs:element name="WarrantConditionAmount" type="CurrencyType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Some WarrantConditions can have a dollar amount assessed against the warrant subject. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="WarrantConditionCommentText" type="CommentType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WarrantStatusElementType">
+		<xs:annotation>
+			<xs:documentation>The status indicates if the warrant is still active or has been quashed, and the physical locatiion of the warrant.  There is one current status 0-many past status'</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="WarrantStatusTypeText" type="WarrantStatusTypeCodeTextType">
+				<xs:annotation>
+					<xs:documentation>Text description of the status.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="WarrantStatusDate" type="xs:date">
+				<xs:annotation>
+					<xs:documentation>Date the status took effect.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="WarrantStatusTime" type="xs:time" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Time the status took effect.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="WarrantLocation" type="WarrantLocationTypeCodeTextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Location of the Physical Copy of the Warrant</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="WarrantStatusComment" type="CommentType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Comment assocated with the warrant status.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CourtORI" type="JudicialAgencyORIIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Court that issued the Status</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="currentStatusIndicator" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>If present, indicates that this status is the current status.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="WarrantSubjectType">
+		<xs:annotation>
+			<xs:documentation>The person who is the subject of the warrant</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PartyDetailType">
+				<xs:sequence>
+					<xs:element name="PersonAssignedIDDetails" type="PersonAssignedIDDetailsType" minOccurs="0"/>
+					<xs:element name="PersonPhysicalDetails" type="PersonPhysicalDetailsType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WarrantNotesType">
+		<xs:annotation>
+			<xs:documentation>Information about why the warrant was issued.  They appear after the word "Other: " under the probable cause section of the signed paper copy of the warrant.  See the signed warrant for the complete cause for the warrant. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="NoteDate" type="xs:date">
+				<xs:annotation>
+					<xs:documentation>Date the note was entered</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NoteText" type="CommentType">
+				<xs:annotation>
+					<xs:documentation>Text contenct of the note.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WarrantSplitBondType">
+		<xs:sequence>
+			<xs:element name="SplitBondAssociation">
+				<xs:annotation>
+					<xs:documentation>And/Or. Indicates if the split bond amount is in addition to the Bond Amount or an alternative to the bond amount. </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="And"/>
+						<xs:enumeration value="Or"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="SplitBondAmount" type="CurrencyType">
+				<xs:annotation>
+					<xs:documentation>Amount of the split bond in dollars.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SplitBondType" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SplitBondTypeText" type="BondTypeCodeTextType" nillable="true" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Type of split bond, e.g. Case Bail.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WarrantBondType">
+		<xs:annotation>
+			<xs:documentation>The amount and type of bond required of the defendant.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="BondAmount"/>
+			<xs:element name="BondType" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="BondTypeText" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FineAmount" type="CurrencyType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The amount of fine associated with the charge(s).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SplitBond" type="WarrantSplitBondType">
+		<xs:annotation>
+			<xs:documentation>Allows the Court to accommodate an alternative to the Bond amount, e.g., Cash Bail. </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WarrantStatusTypeText" type="WarrantStatusTypeCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Text description of the status.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WarrantStatusDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date the status took effect.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WarrantStatusTime" type="xs:time">
+		<xs:annotation>
+			<xs:documentation>Time the status took effect.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WarrantLocation" type="WarrantLocationTypeCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Location of the Physical Copy of the Warrant</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WarrantStatusComment" type="CommentType">
+		<xs:annotation>
+			<xs:documentation>Comment assocated with the warrant status.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WarrantStatus">
+		<xs:annotation>
+			<xs:documentation>The status indicates if the warrant is still active or has been quashed, and the physical locatiion of the warrant.  There is one current status and 0-many past status'</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="WarrantStatusTypeText"/>
+				<xs:element ref="WarrantStatusDate"/>
+				<xs:element ref="WarrantStatusTime" minOccurs="0"/>
+				<xs:element ref="WarrantLocation"/>
+				<xs:element ref="WarrantStatusComment" minOccurs="0"/>
+				<xs:element name="CourtORI" type="JudicialAgencyORIIDType">
+					<xs:annotation>
+						<xs:documentation>Court that issued the Status</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="currentStatusIndicator" type="xs:boolean" use="required">
+				<xs:annotation>
+					<xs:documentation>If present, indicates that this status is the current status.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="WarrantNumber" type="WarrantNumberType">
+		<xs:annotation>
+			<xs:documentation>Number that identifies the warrant.  Usually the case file number + a sequential number.  Can be either manually or auto-assigned.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WarrantTypeText" type="WarrantTypeCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Type of warrant, based on the provided enumeration</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WarrantCondition" type="WarrantConditionType"/>
+	<xs:element name="WarrantConditionTotalAmount" type="CurrencyType">
+		<xs:annotation>
+			<xs:documentation>Contains the sum of all WarrantConditonAmount elements associated with this warrant.  </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WarrantNarrativeText" type="CommentType">
+		<xs:annotation>
+			<xs:documentation>Details added by the user that explain the reason for the issuance of the warrant.  These details appear with the text "The defendant has failed to comply with the conditions of ".  There may be other details included on the the warrant that are not included in this xml document.  For the complete probable cause text, see the official signed paper copy of the warrant.   </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WarrantNotes" type="WarrantNotesType">
+		<xs:annotation>
+			<xs:documentation>Information about why the warrant was issued.  They appear after the word "Other: " under the probable cause section of the signed paper copy of the warrant.  See the signed warrant for the complete cause for the warrant. </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:annotation>
+		<xs:documentation>=============                              Bail/Bond</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="CashBondType">
+		<xs:annotation>
+			<xs:documentation>A cash bond is cash deposited in the court till for a bail amount ordered by the court.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="BondAmount"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SuretyBondType">
+		<xs:annotation>
+			<xs:documentation>A surety bond is a non-cash bond in which a surety (one who promises to answer for the debt or default of another) agrees to assume responsibility for the performance of an obligation in the event of a default.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="SuretyBondGuarantorText"/>
+			<xs:element ref="BondAmount"/>
+			<xs:element ref="SuretyBondComment" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BondSubjectType">
+		<xs:annotation>
+			<xs:documentation>The person who is the subject of the bond</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="PartyDetailType">
+				<xs:sequence>
+					<xs:element name="PersonAssignedIDDetails" type="PersonAssignedIDDetailsType" minOccurs="0"/>
+					<xs:element name="PersonPhysicalDetails" type="PersonPhysicalDetailsType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BondNumberType">
+		<xs:annotation>
+			<xs:documentation>Number assigned to the bond by the court. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="BondTypeText" type="BondTypeCodeTextType" nillable="true"/>
+	<xs:element name="BondNumber" type="BondNumberType">
+		<xs:annotation>
+			<xs:documentation>Number assigned to the bond by the court. </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="BondPostedLocationText" type="BondPostedLocationCodeTextType" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Location where the bond was posted. </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="BondPostedDate" type="xs:date"/>
+	<xs:element name="BondStatus">
+		<xs:annotation>
+			<xs:documentation>The status of the bond.  This repeating element contains the history of the bond statuses over time. </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="BondStatusDate"/>
+				<xs:element ref="BondStatusTypeText"/>
+				<xs:element ref="BondStatusLocationText"/>
+				<xs:element ref="BondStatusComment" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="currentStatusIndicator" type="xs:boolean" use="required">
+				<xs:annotation>
+					<xs:documentation>A true value indicates the status that the court recognizes as current.  A bond can only have one current status.</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="BondLocationText" type="CourtLocationCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Court Office Responsible for the administration of the Bond. </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="BondComment" type="CommentType"/>
+	<xs:element name="BondAmount" type="CurrencyType"/>
+	<xs:element name="BondStatusDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date the status became effective</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="BondStatusTypeText" type="BondStatusTypeCodeTextType"/>
+	<xs:element name="BondStatusLocationText" type="BondStatusLocationCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Physical location of the bond in relation to this status.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="BondStatusComment" type="CommentType"/>
+	<xs:element name="CashBond" type="CashBondType">
+		<xs:annotation>
+			<xs:documentation>A cash bond is cash deposited in the court till for a bail amount ordered by the court.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="SuretyBond" type="SuretyBondType">
+		<xs:annotation>
+			<xs:documentation>A surety bond is a non-cash bond in which a surety (one who promises to answer for the debt or default of another) agrees to assume responsibility for the performance of an obligation in the event of a default.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="SuretyBondGuarantorText">
+		<xs:annotation>
+			<xs:documentation>Name of the company or person that guarentees the bond.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:minLength value="1"/>
+				<xs:maxLength value="60"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="SuretyBondComment" type="CommentType"/>
+	<xs:annotation>
+		<xs:documentation>=============                              Finance</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="AssessmentType">
+		<xs:sequence>
+			<xs:element name="FinancialCategoryText" type="FinancialCategoryCodeTextType"/>
+			<xs:element name="CurrentBalanceAmount" type="CurrencyType">
+				<xs:annotation>
+					<xs:documentation>Current balance due, including zero balances.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DueDate" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Due date for the balance.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="partyKey" use="required">
+			<xs:annotation>
+				<xs:documentation>Reference to the party that the assessment applies to.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="FeeDetailID" type="xs:integer">
+		<xs:annotation>
+			<xs:documentation>Uniquely identifies an instance of the fee.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="FeeDetailFeeAmount" type="CurrencyType">
+		<xs:annotation>
+			<xs:documentation>Amount assoicated with an instance of a fee.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="FeeDetailFeeRecipientCurrentNameText" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Party receiving fee disbursement.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="FinancialDetailType">
+		<xs:annotation>
+			<xs:documentation>Detailed financial information.  Currently only available for restitution.</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="FinancialSummaryType">
+		<xs:sequence>
+			<xs:element name="Assessment" type="AssessmentType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FinancialTransactionType">
+		<xs:annotation>
+			<xs:documentation>Contains a set of information associated with a financial event.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="TransactionID"/>
+			<xs:element ref="TransactionTypeText"/>
+			<xs:element ref="TransactionDate"/>
+			<xs:element ref="TransactionFeeDetail" maxOccurs="unbounded"/>
+			<xs:element ref="TransactionCommentText" minOccurs="0"/>
+			<xs:element ref="TransactionPaymentCreditTypeText" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="TransactionCommentText" type="CommentType">
+		<xs:annotation>
+			<xs:documentation>Comment associated with financial event.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TransactionDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date of financial event.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TransactionFeeDetail">
+		<xs:annotation>
+			<xs:documentation>Contains a set of information associated with an assessed fee.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="FeeDetailID">
+					<xs:annotation>
+						<xs:documentation>Uniquely identifies an instance of a fee.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="FeeDetailFeeCodeText"/>
+				<xs:element ref="FeeDetailFeeAmount">
+					<xs:annotation>
+						<xs:documentation>Amount assoicated with the fee.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="FeeDetailFeeRecipientCurrentNameText" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Party to whom fee is being disbursed.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TransactionID" type="xs:integer">
+		<xs:annotation>
+			<xs:documentation>Uniquely identifies a financial event.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TransactionPaymentCreditTypeText" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Type of payment or credit</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="FeeDetailFeeCodeText" type="FeeCodeCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Description of fee.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="FeeCodeCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Local copy without codes due to volume of codes.  See SimpleType/FeeCodeTextType.xsd for actual values.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="FeeCodeTextType">
+				<xs:attribute name="code" type="FeeCodeCodeType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="FeeCodeTextType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="FeeCodeCodeType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:element name="TransactionTypeText" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Description of financial event (e.g., charge, payment, etc.)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:annotation>
+		<xs:documentation>=============                              EFile Response</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="ReasonTextType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="300"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ReasonCodeTextType">
+		<xs:simpleContent>
+			<xs:extension base="ReasonTextType">
+				<xs:attribute name="code" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============                              Other/Comon</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="ID1to7Type">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="7"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ID1to20Type">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ID1to30Type">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="30"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ID1to10Type">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ID1to11Type">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Text1to100Type">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IDSSNType">
+		<xs:restriction base="xs:string">
+			<xs:length value="11"/>
+			<xs:pattern value="\d{3}-\d{2}-\d{4}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ID11Type">
+		<xs:restriction base="xs:string">
+			<xs:length value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ID10Type">
+		<xs:restriction base="xs:string">
+			<xs:length value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="String1to60Type">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="60"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="String1to250Type">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="250"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="EFileIDType">
+		<xs:annotation>
+			<xs:documentation>Used in e-filing to identify a submission from a partner agency.   When combined with the submitting agency ori it should uniquely identify an efiling submission.  This value is generated by the submittor and should be a unique and human consumable value.   A numeric value that increases sequentially with each submission is a good value for this element.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SubmittingAgencyORIType">
+		<xs:annotation>
+			<xs:documentation>Used in e-filing to identify the agency that is responsible for a submission.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID" type="AgencyORIType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MessageDocumentType">
+		<xs:attribute name="schemaVersion" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Specifies the version of the schema that this message should be validated against.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="messageProducedDateTime" type="xs:dateTime">
+			<xs:annotation>
+				<xs:documentation>Date and time when this message was produced.  This value is included on all outbound messages and not required on inbound messages.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="GroupIDType">
+		<xs:sequence>
+			<xs:element name="ID" type="ID1to7Type"/>
+			<xs:element name="IDTypeText" type="GroupTypeType" minOccurs="0"/>
+			<xs:element name="IDTypeCodeText" type="GroupTypeCodeType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GroupType">
+		<xs:sequence>
+			<xs:element name="GroupID" type="GroupIDType"/>
+			<xs:element name="GroupNameText" type="String1to60Type" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IntegrationIDType">
+		<xs:annotation>
+			<xs:documentation>Numeris System identifier</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ID">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[0-9]+"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="UserAccountType">
+		<xs:annotation>
+			<xs:documentation>Source Application user account name.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="60"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CurrencyType">
+		<xs:restriction base="xs:double"/>
+	</xs:simpleType>
+	<xs:element name="EFileID" type="EFileIDType">
+		<xs:annotation>
+			<xs:documentation>Value which when combined with the SubmittingAgencyORI uniquely identifies a specific instance of an efiling. If two documents share the same values, filings subsequent to the intial filing will be rejected as duplicate filings.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="SubmittingAgencyORI" type="SubmittingAgencyORIType">
+		<xs:annotation>
+			<xs:documentation>ORI for agency submitting the efiling.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:simpleType name="CommentType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="8000"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

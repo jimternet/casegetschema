@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:annotation>
+    <xs:documentation>Refreshed on: 2017-03-22T10:09:54</xs:documentation>
+  </xs:annotation>
+  <xs:simpleType name="CaseIndicatorType">
+    <xs:annotation>
+      <xs:documentation>Enumerates case flag types</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="50 Year Order Per 518B.01" />
+      <xs:enumeration value="50 Year Order Per 609.748" />
+      <xs:enumeration value="Accident type - fatality" />
+      <xs:enumeration value="Accident type - no injury or property damage" />
+      <xs:enumeration value="Accident type - pedestrian" />
+      <xs:enumeration value="Accident type - property damage" />
+      <xs:enumeration value="Accident type- personal injury" />
+      <xs:enumeration value="Active Domestic Abuse No Contact Order (DANCO)" />
+      <xs:enumeration value="Attorney General File" />
+      <xs:enumeration value="Auto Assessment Bypassed" />
+      <xs:enumeration value="BAC not on case at initiation" />
+      <xs:enumeration value="CAAP Audit in Progress - Do Not Schedule Account Hearing" />
+      <xs:enumeration value="Case is Confidential Pursuant to Court Order" />
+      <xs:enumeration value="Case Type Has Changed" />
+      <xs:enumeration value="Certified as adult" />
+      <xs:enumeration value="CHIPS Case Security Removed Pursuant to 2016 Rules Changes" />
+      <xs:enumeration value="CHIPS Case Security Reviewed Pursuant to 2015 Rules Changes" />
+      <xs:enumeration value="Commitment Case Security Reviewed per 2015 Rules" />
+      <xs:enumeration value="Complex Case" />
+      <xs:enumeration value="Conditional Release violation to be set before issuing Judge" />
+      <xs:enumeration value="Conflict Case Out-of-County Judicial Officer" />
+      <xs:enumeration value="Conservator Accounts Waived" />
+      <xs:enumeration value="Consolidated Case" />
+      <xs:enumeration value="Contested Custody/Parenting Time" />
+      <xs:enumeration value="Converted - Adult Cert" />
+      <xs:enumeration value="Converted - ICWA" />
+      <xs:enumeration value="Converted - Interpreter" />
+      <xs:enumeration value="Converted - State Ward" />
+      <xs:enumeration value="Converted- EJJ" />
+      <xs:enumeration value="CR to PT Agency" />
+      <xs:enumeration value="CR to PT Agency and Posted Cash/Security Bond" />
+      <xs:enumeration value="CSC Victim under 18" />
+      <xs:enumeration value="Delinquent Notice Returned Undeliverable" />
+      <xs:enumeration value="Designated EJJ" />
+      <xs:enumeration value="DHS Background Study Waived by Court Order" />
+      <xs:enumeration value="DL Suspension Requested" />
+      <xs:enumeration value="DNA Flag" />
+      <xs:enumeration value="DNR Suspension Requested" />
+      <xs:enumeration value="Domestic assault" />
+      <xs:enumeration value="Early Neutral Evaluation" />
+      <xs:enumeration value="Electronic File" />
+      <xs:enumeration value="Enrolled in Crossover Youth Program" />
+      <xs:enumeration value="Expedited Litigation Track" />
+      <xs:enumeration value="Fast track case" />
+      <xs:enumeration value="Filed as EJJ" />
+      <xs:enumeration value="Final Paternity Adjudication Entered" />
+      <xs:enumeration value="Financial Account Monitored by Court Administrator" />
+      <xs:enumeration value="Financial Account Monitored by Probation" />
+      <xs:enumeration value="Financial Account Monitored by Screener Collector" />
+      <xs:enumeration value="Fingerprints needed" />
+      <xs:enumeration value="Fingerprints taken" />
+      <xs:enumeration value="Historical-Do Not Purge" />
+      <xs:enumeration value="ICWA" />
+      <xs:enumeration value="IFP Defendant/Respondent" />
+      <xs:enumeration value="IFP Intervenor" />
+      <xs:enumeration value="IFP Petitioner/Plaintiff" />
+      <xs:enumeration value="In Custody" />
+      <xs:enumeration value="Interpreter cancelled" />
+      <xs:enumeration value="Interpreter required" />
+      <xs:enumeration value="Interpreter used" />
+      <xs:enumeration value="Intoxilyzer 5000 Challenge" />
+      <xs:enumeration value="IV-D Child Support case" />
+      <xs:enumeration value="Judicial Officer Removed/Recused" />
+      <xs:enumeration value="Juvenile monitoring - Out of Home placement" />
+      <xs:enumeration value="Juvenile monitoring - Protective supervision" />
+      <xs:enumeration value="Licensing Board" />
+      <xs:enumeration value="Listening Device Needed" />
+      <xs:enumeration value="Own Recognizance" />
+      <xs:enumeration value="Paternity Case Security Removed Post-Adjudication" />
+      <xs:enumeration value="PD Fee to be Assessed" />
+      <xs:enumeration value="PD Fee to be Waived" />
+      <xs:enumeration value="Photo to be Verified" />
+      <xs:enumeration value="Photo Verified" />
+      <xs:enumeration value="Physical File Destroyed" />
+      <xs:enumeration value="Physical File Reconstructed" />
+      <xs:enumeration value="POR required - Commitment" />
+      <xs:enumeration value="Posted Cash or Surety Bond" />
+      <xs:enumeration value="Predatory Offender Registration May Be Required" />
+      <xs:enumeration value="Protective Order Pursuant to Minn R Civ Pro 26.03" />
+      <xs:enumeration value="Public Defender Discharged" />
+      <xs:enumeration value="Released" />
+      <xs:enumeration value="Released Own Recognizance" />
+      <xs:enumeration value="Restitution Ordered" />
+      <xs:enumeration value="Review Appellate Court Document Classification" />
+      <xs:enumeration value="Review Case Security" />
+      <xs:enumeration value="Review Complaint Classification" />
+      <xs:enumeration value="Scofflaw" />
+      <xs:enumeration value="Special Judicial Assignment" />
+      <xs:enumeration value="Speedy Trial Demand" />
+      <xs:enumeration value="SRL Mandatory eFiler" />
+      <xs:enumeration value="State ward" />
+      <xs:enumeration value="Subject to Local Review - Account Value $3000 or Less" />
+      <xs:enumeration value="TCIS PVH case needing correction" />
+      <xs:enumeration value="Transport" />
+      <xs:enumeration value="Venue Changed, No Execution May Issue" />
+      <xs:enumeration value="Writ of Habeas Corpus" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CaseIndicatorTypeCodeType">
+    <xs:annotation>
+      <xs:documentation>Enumerates case flag types</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="50YRORD" />
+      <xs:enumeration value="50YRORD2" />
+      <xs:enumeration value="ACCFATAL" />
+      <xs:enumeration value="ACCNONE" />
+      <xs:enumeration value="ACCPED" />
+      <xs:enumeration value="ACCPD" />
+      <xs:enumeration value="ACCPI" />
+      <xs:enumeration value="ACTDANCO" />
+      <xs:enumeration value="AGFILE" />
+      <xs:enumeration value="AABYPASS" />
+      <xs:enumeration value="NOBACINT" />
+      <xs:enumeration value="CAAPAUDPRG" />
+      <xs:enumeration value="CONFIDCO" />
+      <xs:enumeration value="CASECHNG" />
+      <xs:enumeration value="CERTADULT" />
+      <xs:enumeration value="CHPSCSRE16" />
+      <xs:enumeration value="CHIPSCSRE" />
+      <xs:enumeration value="COMMITCSRE" />
+      <xs:enumeration value="CMPXCS" />
+      <xs:enumeration value="CNDRELVIOL" />
+      <xs:enumeration value="CONFLICT" />
+      <xs:enumeration value="CNSVACCWAV" />
+      <xs:enumeration value="CONSOL" />
+      <xs:enumeration value="CONCTDYPT" />
+      <xs:enumeration value="CNVADLTCER" />
+      <xs:enumeration value="CNVICWA" />
+      <xs:enumeration value="CNVINTERP" />
+      <xs:enumeration value="CNVSTATWRD" />
+      <xs:enumeration value="CNVEJJ" />
+      <xs:enumeration value="CRPR" />
+      <xs:enumeration value="CRPBOND" />
+      <xs:enumeration value="CSCVICT" />
+      <xs:enumeration value="DELNOT" />
+      <xs:enumeration value="EJJDESIG" />
+      <xs:enumeration value="DHSBASWBCO" />
+      <xs:enumeration value="DLSUSP" />
+      <xs:enumeration value="DNAPC" />
+      <xs:enumeration value="DNRS" />
+      <xs:enumeration value="DOMASSLT" />
+      <xs:enumeration value="ENE" />
+      <xs:enumeration value="EFILE" />
+      <xs:enumeration value="COY" />
+      <xs:enumeration value="ELT" />
+      <xs:enumeration value="FASTRACK" />
+      <xs:enumeration value="EJJFILE" />
+      <xs:enumeration value="PATADJFIN" />
+      <xs:enumeration value="ADMIN" />
+      <xs:enumeration value="PROB" />
+      <xs:enumeration value="COLECT" />
+      <xs:enumeration value="FINGERN" />
+      <xs:enumeration value="FINGERPRT" />
+      <xs:enumeration value="HISTOR" />
+      <xs:enumeration value="ICWA" />
+      <xs:enumeration value="IFPDFD" />
+      <xs:enumeration value="IFPINTVN" />
+      <xs:enumeration value="IFPPET" />
+      <xs:enumeration value="INCUS" />
+      <xs:enumeration value="INTRPCANCL" />
+      <xs:enumeration value="INTRPREQ" />
+      <xs:enumeration value="INTRPUSED" />
+      <xs:enumeration value="SORCCDE" />
+      <xs:enumeration value="IVDCHILD" />
+      <xs:enumeration value="REMOVE" />
+      <xs:enumeration value="MONITOROHP" />
+      <xs:enumeration value="MONITORPS" />
+      <xs:enumeration value="LICBRD" />
+      <xs:enumeration value="LISTNDEV" />
+      <xs:enumeration value="OWNRECOG" />
+      <xs:enumeration value="PATCSRE" />
+      <xs:enumeration value="PDFASSESS" />
+      <xs:enumeration value="PDFWAIVE" />
+      <xs:enumeration value="PHOT02BV" />
+      <xs:enumeration value="PHOTOV" />
+      <xs:enumeration value="PHYFILEDES" />
+      <xs:enumeration value="RECONS" />
+      <xs:enumeration value="PORCOMMIT" />
+      <xs:enumeration value="PCOSB" />
+      <xs:enumeration value="POR" />
+      <xs:enumeration value="PROORD2603" />
+      <xs:enumeration value="PDDSCHRG" />
+      <xs:enumeration value="REL" />
+      <xs:enumeration value="ROR" />
+      <xs:enumeration value="RESTORD" />
+      <xs:enumeration value="RVWAPPDOC" />
+      <xs:enumeration value="RVWCASSEC" />
+      <xs:enumeration value="RVCPRDACT" />
+      <xs:enumeration value="SCOFFLAW" />
+      <xs:enumeration value="SPCJUDASGN" />
+      <xs:enumeration value="SPEEDTRL" />
+      <xs:enumeration value="SRLEFILE" />
+      <xs:enumeration value="WARD" />
+      <xs:enumeration value="SBJLOCRVW" />
+      <xs:enumeration value="TCISPVH" />
+      <xs:enumeration value="TRANS" />
+      <xs:enumeration value="VENCHGEXC" />
+      <xs:enumeration value="WRITHABCRP" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="CaseIndicatorTypeCodeTextType">
+    <xs:simpleContent>
+      <xs:extension base="CaseIndicatorType">
+        <xs:attribute name="code" type="CaseIndicatorTypeCodeType" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:schema>

@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2015 rel. 3 (http://www.altova.com) by Lee Ann Iverson (MN SUPREME COURT) -->
+<!--
+ Copyright © 2007, 2009, 2010 by the State of Minnesota
+	State Court Administrator’s Office
+	All Rights Reserved
+-->
+<!--
+	Modification History 
+	Date					Version		Rev			Change
+	01/08/2007		3:1				1				See the CourtXML 3 Change Log.doc for changes from version 2.0.0.
+	02/02/2007		3:1				2				Add bond to request and reply.
+	03/30/2007		3:1				3				Eliminated the use of restrictions of complex types.   This should not change any existing messages.
+	05/25/2007		3:1				4				Added default value of false to Warrant, FinancialSummary and Bond SelectedIndicator elements.
+    12/15/2007		3:2				1				Modified Bond to use BondOutType2 to accommodate the use of individuals as well as companies as the guarantor of a surety bond.
+																	Added CitationDocument to request options and reply content.
+																	Added selection options for Other Agency Number, Citatoin Number, Report Control Number and Arrest Control Number.
+																	Removed fixed value on schemaVersion attribute because it caused problems with WebServices.
+	06/01/2008		3:3				1				Added CaseRespondent to SubjectParties
+																	Added FamilyJudgment to CourtDecisions
+	05/13/2010		3:4				1				Changed CourtDecisions to use FamilyJudmentType2.
+	05/25/2010		3:4				2				Changed IncludeAttorneysIndicator to type boolean in ChargeDispositions, CourtDecisions, and JuvenileInterimPlacementOrder.
+	05/25/2012		3:5				1				Added new warrant bond fields
+	07/02/2013		3:6				1				Use new base schema CourtXML_3_1.xsd.
+																ChargeStatuteOrdinanceRule structure removed with elements being placed as a child of Charge.  
+																Statute, PendingStatute, Ordinance and Rule structures replaced and replaced with OffenseID, OffenseCite and 
+																	OffenseDescriptionText elements that are children of Charge.
+																Arresting/Reporting Official BadgeNumber and Name elements renamed to OfficerBadgeNumber and OfficerName.
+																ReportControlNumber renamed to ReportingAgencyControlNumber within Citation/Incident.
+																Within Citation/Vehicle added VehicleYear, PlateExpiration and VehicleID.   Renamed HazardousVehicleIndicator to HazardousMaterialsIndicator
+	12/23/2013		3:6				2				Added OffenseTypeText and OffenseOwnerText to CaseGetCitationChargeType.
+	12/27/2013		3:6				3				Made OffenseTypeText optional..
+	12/27/2013		3:6				4				Made IssuingMethod optional. Change ChargeAmended to not be unbounded.   Fixed Charge within Citation to be unbounded.
+	05/20/2015		3:7				1				Changed Bond to use the new WarrantBondType with new BondType element and repeating BondTypeText
+																Changed SplitBond to use the new WarrantSplitType with new BondType element and repeating BondTypeText and to allow repeating SplitBonds
+																Changed CaseFileDateTime to CaseFileDate
+																Changed CaseEventDateTime to CaseEventDate and added a new optional element for CaseEventTime
+																Added Amount to CourtCaseEvent
+																Added Financial Detail (CaseOption and CaseInformation)
+																Changed PersonPhysicalDetails within Citee from local elements to use the PersonPhysicalDetailsType
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.courts.state.mn.us/CourtXML/3" targetNamespace="http://www.courts.state.mn.us/CourtXML/3" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1">
+	<xs:include schemaLocation="CourtXML_3_2.xsd"/>
+	<xs:complexType name="CaseGetChargeType">
+		<xs:sequence>
+			<xs:element ref="ChargeSequenceID"/>
+			<xs:element ref="ChargeFiledDate" minOccurs="0"/>
+			<xs:element ref="OffenseID"/>
+			<xs:element ref="OffenseCite" minOccurs="0"/>
+			<xs:element ref="OffenseDescriptionText" minOccurs="0"/>
+			<xs:element ref="OffenseDate"/>
+			<xs:element ref="OffenseTime" minOccurs="0"/>
+			<xs:element ref="OffenseDateEnd" minOccurs="0"/>
+			<xs:element ref="OffenseTimeEnd" minOccurs="0"/>
+			<xs:element ref="OffenseDatesOnOrAbout"/>
+			<xs:element ref="OffenseTimesAtOrAbout" minOccurs="0"/>
+			<xs:element ref="OffenseLocationText" minOccurs="0"/>
+			<xs:element ref="OffenseOwnerText" minOccurs="0"/>
+			<xs:element ref="OffenseTypeText" minOccurs="0"/>
+			<xs:element ref="SeverityLevelText"/>
+			<xs:element ref="GeneralOffenseCodeText" minOccurs="0"/>
+			<xs:element ref="MinnesotaOffenseCode" minOccurs="0"/>
+			<xs:element ref="ChargeLegalDescriptionText"/>
+			<xs:element ref="PredatoryOffenderRegistrationRequiredIndicator" minOccurs="0"/>
+			<xs:element ref="TargetedMisdemeanorIndicator" minOccurs="0"/>
+			<xs:element name="ChargeStatuteSupplemental" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Statute that provides additional qualifications to the charge.   OffenseID values are restricted to those that are Minnesota state statutes.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="StatuteTypeText"/>
+						<xs:element ref="OffenseID"/>
+						<xs:element ref="OffenseCite" minOccurs="0"/>
+						<xs:element ref="OffenseDescriptionText" minOccurs="0"/>
+						<xs:element ref="SeverityLevelText" minOccurs="0"/>
+						<xs:element ref="ChargeLegalDescriptionText"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Arrest" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="ArrestDate" minOccurs="0"/>
+						<xs:element ref="ArrestTime" minOccurs="0"/>
+						<xs:element ref="ArrestingAgencyORI" minOccurs="0"/>
+						<xs:element ref="ArrestingAgencyControlNumber" minOccurs="0"/>
+						<xs:element ref="ArrestingOfficial" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Report" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="ReportingAgencyORI" minOccurs="0"/>
+						<xs:element ref="ReportingAgencyControlNumber" minOccurs="0"/>
+						<xs:element ref="ReportingOfficial" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="ProsecutingAgencyORI" minOccurs="0"/>
+			<xs:element ref="CommunityOfOffenseText" minOccurs="0"/>
+			<xs:element name="Vehicle" type="CaseGetVehicleType" minOccurs="0"/>
+			<xs:element ref="AccidentDamageText" minOccurs="0"/>
+			<xs:element ref="Speeding" minOccurs="0"/>
+			<xs:element ref="AnimalsOverLimitCount" minOccurs="0"/>
+			<xs:element ref="VehicleOverweightMeasure" minOccurs="0"/>
+			<xs:element ref="BloodAlcoholConcentration" minOccurs="0"/>
+			<xs:element ref="ReportToDPSIndicator" minOccurs="0"/>
+			<xs:element ref="ReportToDNRIndicator" minOccurs="0"/>
+			<xs:element ref="ChargeSubjectReference"/>
+			<xs:element ref="ChargePlea" minOccurs="0"/>
+			<xs:element ref="ChargeAmended" minOccurs="0"/>
+			<xs:element ref="TrialDemand" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="chargeKey" type="xs:positiveInteger" use="required"/>
+		<xs:attribute name="chargeVersionKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CaseGetChargeDispositionType">
+		<xs:sequence>
+			<xs:element name="Charge" type="CaseGetChargeType"/>
+			<xs:element name="DispositionEvent" type="CaseGetDispositionEventType"/>
+			<xs:element name="CaseDefendant" type="CaseDefendantType"/>
+		</xs:sequence>
+		<xs:attribute name="chargeKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CaseGetChargeAdjudicationType">
+		<xs:sequence>
+			<xs:element name="Charge" type="CaseGetChargeType"/>
+			<xs:element name="DispositionEvent" type="CaseGetDispositionEventType"/>
+			<xs:element name="ChildSubject">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="ChildDelinquent" type="ChildDelinquentType"/>
+						<xs:element name="ChildNonDelinquent" type="ChildNonDelinquentType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="chargeKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CaseGetDispositionEventType">
+		<xs:sequence>
+			<xs:element ref="ChargeDispositionDate"/>
+			<xs:element ref="ChargeDispositionJudge" minOccurs="0"/>
+			<xs:element ref="ChargeDispositionText"/>
+			<xs:element ref="ChargeDispositionSeverityLevel"/>
+			<xs:element ref="ChargeDispositionAmendedReasonText" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="ChargeDispositionComment" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CaseGetCitationChargeType">
+		<xs:sequence>
+			<xs:element ref="ChargeSequenceID"/>
+			<xs:element ref="OffenseID"/>
+			<xs:element ref="OffenseCite"/>
+			<xs:element ref="OffenseDescriptionText"/>
+			<xs:element ref="OffenseOwnerText" minOccurs="0"/>
+			<xs:element ref="OffenseTypeText" minOccurs="0"/>
+			<xs:element ref="ThirdViolationIndicator" minOccurs="0"/>
+			<xs:element ref="SeverityLevelText"/>
+			<xs:element ref="GeneralOffenseCodeText" minOccurs="0"/>
+			<xs:element ref="MinnesotaOffenseCode" minOccurs="0"/>
+			<xs:element ref="ChargeLegalDescriptionText"/>
+			<xs:element ref="PredatoryOffenderRegistrationRequiredIndicator" minOccurs="0"/>
+			<xs:element ref="TargetedMisdemeanorIndicator" minOccurs="0"/>
+			<xs:element ref="Speeding" minOccurs="0"/>
+			<xs:element ref="AnimalsOverLimitCount" minOccurs="0"/>
+			<xs:element ref="VehicleOverweightMeasure" minOccurs="0"/>
+			<xs:element ref="BloodAlcoholConcentration" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="chargeKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CaseGetCitationDocumentType">
+		<xs:sequence>
+			<xs:element name="Filing">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="ProsecutingAgencyORI" minOccurs="0"/>
+						<xs:element ref="CourtJurisdictionORI"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Citation">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="CitationNumber"/>
+						<xs:element ref="OffenseDate"/>
+						<xs:element ref="OffenseTime" minOccurs="0"/>
+						<xs:element ref="TicketDate"/>
+						<xs:element ref="IssuingAgencyORI"/>
+						<xs:element ref="IssuingMethodText" minOccurs="0"/>
+						<xs:element name="Incident">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element ref="WeatherConditionText" minOccurs="0"/>
+									<xs:element ref="PropertyDamageText" minOccurs="0"/>
+									<xs:element ref="AccidentDamageText" minOccurs="0"/>
+									<xs:element ref="OffenseLocationText" minOccurs="0"/>
+									<xs:element ref="OfficerBadgeNumber" minOccurs="0"/>
+									<xs:element ref="OfficerNameText" minOccurs="0"/>
+									<xs:element ref="ReportingAgencyControlNumber" minOccurs="0"/>
+									<xs:element ref="CommunityOfOffenseText" minOccurs="0"/>
+									<xs:element ref="AppearBy" minOccurs="0"/>
+									<xs:element name="Vehicle" type="CaseGetVehicleType" minOccurs="0"/>
+									<xs:element ref="ParkingSpace" minOccurs="0"/>
+									<xs:element ref="OfficerCommentText" minOccurs="0"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Citee">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="PartyKey" type="IntegrationIDType" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>The party integration ID. If provided will skip all other party matching logic and select the party with this id.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="CiteeInvolvementText" type="CiteeInvolvementTypeCodeTextType" nillable="true">
+										<xs:annotation>
+											<xs:documentation>Must be a value from the enumerated list.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="PartyName" type="PartyNameBaseType"/>
+									<xs:element name="PartyAddress" type="PartyAddressBaseType" minOccurs="0"/>
+									<xs:element name="PersonBirthDate" type="xs:date" minOccurs="0"/>
+									<xs:element name="PersonAssignedIDDetails" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="PersonID" type="PersonIDType" minOccurs="0"/>
+												<xs:element name="PersonDriverLicenseID" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="PersonDriverLicenseIDType"/>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="PersonStateID" minOccurs="0" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>A number issued by a state Automated Fingerprint Identification System (AFIS) based on submitted fingerprints. Sometimes referred to as a State ID number or a SID.</xs:documentation>
+													</xs:annotation>
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:extension base="PersonStateIDType"/>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="PersonOtherID" type="PersonOtherIDType" minOccurs="0" maxOccurs="unbounded"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="PersonPhysicalDetails" type="PersonPhysicalDetailsType" minOccurs="0"/>
+									<xs:element name="FingerPrintedIndicator" type="xs:boolean">
+										<xs:annotation>
+											<xs:documentation>If true, indicates the defendant has been fingerprinted for this case. </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="InCustodyIndicator" type="xs:boolean" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>If true, indicates the citee is in custody. If the flag is omitted, is has the same effect as false. </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="IdentificationMethodText" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Method used to identify the citee.</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="DL"/>
+												<xs:enumeration value="DVS Web"/>
+												<xs:enumeration value="Photo ID"/>
+												<xs:enumeration value="FP"/>
+												<xs:enumeration value="Other"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Charge" type="CaseGetCitationChargeType" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="citationKey" type="xs:positiveInteger" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CaseGetSentenceDispositionType">
+		<xs:complexContent>
+			<xs:extension base="CaseGetSentenceDelinquencyDispositionEventType">
+				<xs:sequence>
+					<xs:element name="Charges">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ChargeDisposition" type="CaseGetChargeDispositionType" maxOccurs="unbounded"/>
+								<xs:element ref="SentenceChargeSeverityLevel" minOccurs="0"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SentenceDispositionDetail" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="DispositionComponentType">
+									<xs:sequence>
+										<xs:element name="DispositionConditionElement" type="DispositionConditionElementType" minOccurs="0" maxOccurs="unbounded"/>
+										<xs:element name="DispositionComponentStatus" type="StatusType" minOccurs="0"/>
+									</xs:sequence>
+								</xs:extension>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SentenceEventHistoryReference" minOccurs="0">
+						<xs:complexType>
+							<xs:attribute name="sentenceEventKey"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SentenceHistoryReference" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>On an amended sentence this element's Sentence ID attribute points back to the Sentence ID of the sentence that was amended.  Using these references you can "walk" back to the original sentence, i.e., the Sentence element instance with no SentenceHistoryReferenceID element. </xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:attribute name="sentenceDelinquencyDispositionKey" type="xs:positiveInteger" use="required"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="sentenceDelinquencyDispositionKey" type="xs:positiveInteger" use="required">
+					<xs:annotation>
+						<xs:documentation>References a set of detailed information about the sentence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="sentenceEventKey" type="xs:positiveInteger" use="required">
+					<xs:annotation>
+						<xs:documentation>References a set of general information about the sentence.  Case processing practices determine whether a sentenceEventKey exists  for each sentenceDelinquencyDispositionKey  OR if a sentenceEventKey is associated with multiple sentenceDelinquencyDispositionKey’s. May be deprecated in the future, for best results use the sentenceDelinquencyDispositionKey.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CaseGetSentenceAdjudicationType">
+		<xs:complexContent>
+			<xs:extension base="CaseGetSentenceDelinquencyDispositionEventType">
+				<xs:sequence>
+					<xs:element name="Charges">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ChargeAdjudication" type="CaseGetChargeAdjudicationType" maxOccurs="unbounded"/>
+								<xs:element ref="SentenceChargeSeverityLevel" minOccurs="0"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SentenceDispositionDetail" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="DispositionComponentType">
+									<xs:sequence>
+										<xs:element name="DispositionConditionSet" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="DispositionConditionElement" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:complexContent>
+																<xs:extension base="DispositionConditionElementType"/>
+															</xs:complexContent>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="RelatedParty" type="RelatedPartyType" minOccurs="0" maxOccurs="unbounded"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="DispositionComponentStatus" type="StatusType" minOccurs="0"/>
+									</xs:sequence>
+								</xs:extension>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SentenceEventHistoryReference" minOccurs="0">
+						<xs:complexType>
+							<xs:attribute name="sentenceEventKey"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SentenceHistoryReference" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>On an amended sentence this element's Sentence ID attribute points back to the Sentence ID of the sentence that was amended.  Using these references you can "walk" back to the original sentence, i.e., the Sentence element instance with no SentenceHistoryReferenceID element. </xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:attribute name="sentenceDelinquencyDispositionKey" type="xs:positiveInteger" use="required"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="sentenceDelinquencyDispositionKey" type="xs:positiveInteger" use="required">
+					<xs:annotation>
+						<xs:documentation>References a set of detailed information about the sentence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="sentenceEventKey" type="xs:positiveInteger" use="required">
+					<xs:annotation>
+						<xs:documentation>References a set of general information about the sentence.  Case processing practices determine whether a sentenceEventKey exists  for each sentenceDelinquencyDispositionKey  OR if a sentenceEventKey is associated with multiple sentenceDelinquencyDispositionKey’s. May be deprecated in the future, for best results use the sentenceDelinquencyDispositionKey.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CaseGetSentenceDelinquencyDispositionEventType">
+		<xs:annotation>
+			<xs:documentation>Adult Sentencing or Juvenile Disposition Hearing</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="PronouncedDate"/>
+			<xs:element ref="SentenceEventText"/>
+			<xs:element ref="PronouncingJudge" minOccurs="0"/>
+			<xs:element name="AmendedReasonText" type="AmendmentReasonSentenceTypeCodeTextType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CaseGetVehicleType">
+		<xs:sequence>
+			<xs:element ref="VehicleTypeText" minOccurs="0"/>
+			<xs:element ref="VehicleMakeText" minOccurs="0"/>
+			<xs:element ref="VehicleModelText" minOccurs="0"/>
+			<xs:element ref="VehicleYear" minOccurs="0"/>
+			<xs:element ref="VehicleColorText" minOccurs="0"/>
+			<xs:element ref="VehicleLicensePlate"/>
+			<xs:element ref="CommercialVehicleIndicator" minOccurs="0"/>
+			<xs:element ref="HazardousMaterialsIndicator" minOccurs="0"/>
+			<xs:element ref="VehicleID" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CaseOptionsType">
+		<xs:all>
+			<xs:element name="CourtCaseHeaderGroup" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CourtCaseEvent" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CasePartyRelation" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Attorney" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CaseProsecutor" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SubjectParties" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include the specific party types based on the case type.  Criminal Adult includes CaseDefendant and CasePetitionerPlaintiff.  Juvenile "Criminal" includes ChildDelinquent or ChildNonDelinquent (depending on if it is a delinquency case or not), CasePetitionerPlaintiff, ParentGuardianCustodian.  Family CHIPS Truency, Runaway and Del under 10 include ChildNonDelinquent, CasePetitionerPlaintiff and ParentGuardianCustodian.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Options" minOccurs="0">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="IncludeAttorneysIndicator" type="xs:boolean" default="false">
+										<xs:annotation>
+											<xs:documentation>If true include the full Attorney element within the RepresentedBy element.  If false or left as default only include reference id's.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PartyToTheAction" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Options" minOccurs="0">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="IncludeAttorneysIndicator" type="xs:boolean" default="false">
+										<xs:annotation>
+											<xs:documentation>If true include the full Attorney element within the RepresentedBy element.  If false or left as default only include reference id's.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Victim" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Witness" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="HearingTrialSetting" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Charge" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Options" minOccurs="0">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="IncludePriorVersionsIndicator" type="xs:boolean" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Include the charges prior versions.   If false or unspecified only a reference to prior versions will be included.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="IncludeDisposedIndicator" type="xs:boolean" default="false" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Include charges that are disposed.  By default only charges without dispositions are included (ChargeDisposition/ChargeAdjudication should be used for disposed charges).</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ChargeDispositions" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include ChargeDisposition elements for adult and ChargeAdjudication elements for Juvenile.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Options" minOccurs="0">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="IncludeAttorneysIndicator" type="xs:boolean" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>This indicator controls whether the attorney or the attorney reference is included with that party.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CourtDecisions" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include AdultSentence elements for adult and DelinquencyDisposition elements for Juvenile.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Options" minOccurs="0">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="IncludePartiesIndicator" type="xs:boolean" default="false" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>If true include the full party specific  CourtXML Element for "Party" elements contained within.  If false or left as default only include reference id's.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="IncludeAttorneysIndicator" type="xs:boolean" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>If you selected IncludeParties this indicator controls whether the attorney or the attorney reference is included with that party.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InterimConditionsOrder" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Options" minOccurs="0">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="IncludePartiesIndicator" type="xs:boolean" default="false" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>If true include the full party specific  CourtXML Element for "Party" elements contained within.  If false or left as default only include reference id's.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="JuvenileInterimPlacementOrder" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Include this element.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Options" minOccurs="0">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="IncludePartiesIndicator" type="xs:boolean" default="false">
+										<xs:annotation>
+											<xs:documentation>If true include the full party specific  CourtXML Element for "Party" elements contained within.  If false or left as default only include reference id's.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="IncludeAttorneysIndicator" type="xs:boolean" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>If you selected IncludeParties this indicator controls whether the attorney or the attorney reference is included with that party.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Warrant" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FinancialSummary" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FinancialDetail" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Bond" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CitationDocument" minOccurs="0">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="SelectedIndicator" type="xs:boolean" default="false" minOccurs="0"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="CaseInformation">
+		<xs:annotation>
+			<xs:documentation>Contains CourtXML global elements that have either been configured, or requested, to be included with this message.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CourtCaseHeaderGroup" type="CourtCaseHeaderGroupType" minOccurs="0"/>
+			<xs:element name="CourtCaseEvent" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="CourtCaseEventType">
+							<xs:sequence>
+								<xs:element ref="CaseEventAmount" minOccurs="0"/>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CasePartyRelation" type="CasePartyRelationType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Attorney" type="AttorneyType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="CaseProsecutor" type="AttorneyType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="PartyToTheAction" type="PartyToTheActionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="SubjectParties" type="SubjectParties" minOccurs="0"/>
+			<xs:element name="Victim" type="VictimType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Witness" type="WitnessType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="HearingTrialSetting" type="HearingTrialSettingType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Charge" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="CaseGetChargeType">
+							<xs:sequence>
+								<xs:element name="ChargeHistory" minOccurs="0">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="ChargeVersion" type="CaseGetChargeType" minOccurs="0" maxOccurs="unbounded"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ChargeDispositions" minOccurs="0">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="ChargeDisposition" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="CaseGetChargeDispositionType"/>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="ChargeAdjudication" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="CaseGetChargeAdjudicationType"/>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CourtDecisions" minOccurs="0">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="AdultSentence" type="CaseGetSentenceDispositionType" maxOccurs="unbounded"/>
+						<xs:element name="DelinquencyDisposition" type="CaseGetSentenceAdjudicationType" maxOccurs="unbounded"/>
+						<xs:element name="JuvenileJudgment" type="JuvenileJudgmentType" maxOccurs="unbounded"/>
+						<xs:element name="FamilyJudgment" type="FamilyJudgmentType" maxOccurs="unbounded"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InterimConditionsOrder" type="InterimConditionsOrderType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="JuvenileInterimPlacementOrder" type="JuvenileInterimPlacementOrderType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="FinancialSummary" type="FinancialSummaryType" minOccurs="0"/>
+			<xs:element name="FinancialDetail" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specific financial activity information.  Currently only available for Restitution.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="FinancialTransaction" type="FinancialTransactionType" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Events relating to charges, payments, etc.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Warrant" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="WarrantNumber"/>
+						<xs:element ref="CourtName"/>
+						<xs:element name="IssueDate" type="xs:date" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Date the warrant was issued.  Optional only because this date can be removed during the quashing process.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="IssuingJudge" type="JudicialOfficialType" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>The judge who issued the warrant.  Optional only because this value can be removed during the quashing process.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="ServedDate" type="xs:date" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Date the warrant was served</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="ExpirationDate" type="xs:date" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Date the warrant expires.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element ref="WarrantTypeText"/>
+						<xs:element name="WarrantSubject" type="WarrantSubjectType"/>
+						<xs:element ref="WarrantStatus" maxOccurs="unbounded"/>
+						<xs:element name="Charge" type="CaseGetChargeType" maxOccurs="unbounded"/>
+						<xs:choice minOccurs="0">
+							<xs:element name="HoldIndicator" type="xs:boolean">
+								<xs:annotation>
+									<xs:documentation>If true, the defendant must be held in custody and cannot be released on bond or by paying a fine.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Bond" type="WarrantBondType">
+								<xs:annotation>
+									<xs:documentation>The amount and type of bond required of the defendant.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:choice>
+						<xs:element ref="WarrantCondition" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element ref="WarrantConditionTotalAmount" minOccurs="0"/>
+						<xs:element ref="WarrantNarrativeText" minOccurs="0"/>
+						<xs:element ref="WarrantNotes" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element ref="SplitBond" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="warrantKey" type="xs:positiveInteger" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Bond" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="BondNumber" minOccurs="0"/>
+						<xs:element ref="BondTypeText"/>
+						<xs:element ref="BondPostedLocationText" minOccurs="0"/>
+						<xs:element ref="BondPostedDate"/>
+						<xs:element ref="BondStatus" maxOccurs="unbounded"/>
+						<xs:element name="BondSubject" type="BondSubjectType"/>
+						<xs:choice>
+							<xs:element ref="CashBond"/>
+							<xs:element ref="SuretyBond" maxOccurs="unbounded"/>
+						</xs:choice>
+						<xs:element ref="BondLocationText"/>
+						<xs:element name="Charge" type="CaseGetChargeType" maxOccurs="unbounded"/>
+						<xs:element ref="BondComment" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="bondKey" type="xs:positiveInteger" use="required">
+						<xs:annotation>
+							<xs:documentation>Unique numeric identifier for this bond.  Issue filed becuase it is not currently included in IXML. </xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CitationDocument" type="CaseGetCitationDocumentType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SubjectParties">
+		<xs:sequence>
+			<xs:element name="CaseDefendant" type="CaseDefendantType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="ChildDelinquent" type="ChildDelinquentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="ChildNonDelinquent" type="ChildNonDelinquentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="ParentGuardianCustodian" type="ParentGuardianCustodianType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="CasePetitionerPlaintiff" type="CasePetitionerPlaintiffType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="CaseRespondent" type="CaseRespondentType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CaseGetRequest">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="MessageDocumentType">
+					<xs:sequence>
+						<xs:element name="Selection">
+							<xs:annotation>
+								<xs:documentation>Specify which case(s) to return.   A maximum of 20 can be provided per request.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:choice>
+									<xs:element ref="CourtFileNumber" maxOccurs="unbounded"/>
+									<xs:element name="WarrantNumber" type="WarrantNumberType" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>Select cases associated to a given warrant number.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="ControlNumber" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>Select cases associated to a given control number.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:choice>
+												<xs:sequence>
+													<xs:element name="ReportingAgencyORI" type="ReportingAgencyORIType"/>
+													<xs:element name="ReportingAgencyControlNumber" type="ControlNumberInType"/>
+												</xs:sequence>
+												<xs:sequence>
+													<xs:element name="ArrestingAgencyORI" type="ArrestingAgencyORIType"/>
+													<xs:element name="ArrestingAgencyControlNumber" type="ControlNumberInType"/>
+												</xs:sequence>
+											</xs:choice>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="Citation" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>Select cases that were initiated via a given citation.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="CitationNumber" type="CitationNumberType"/>
+												<xs:element name="IssuingAgencyORI" type="IssuingAgencyORIType">
+													<xs:annotation>
+														<xs:documentation>ORI of Agency Issuing the Citation</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="OtherAgencyNumber" type="OtherAgencyNumberType" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>Select cases with a given other agency/Case Cross Reference number.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:choice>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="CaseOptions" type="CaseOptionsType">
+							<xs:annotation>
+								<xs:documentation>Specifies the content from the court case that is to be returned with the reply message.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CaseGetReply">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="MessageDocumentType">
+					<xs:sequence>
+						<xs:element name="CaseRequest" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>One or more requests for case information can be made within a single request message.  For each request made the consumer will receive a Request node containing either the requested data or error information which prevented the return of the requested data.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:choice>
+										<xs:annotation>
+											<xs:documentation>Contains the identifier that was submitted with the request.</xs:documentation>
+										</xs:annotation>
+										<xs:element ref="CourtFileNumber"/>
+										<xs:element ref="WarrantNumber"/>
+										<xs:element name="ControlNumber">
+											<xs:complexType>
+												<xs:choice>
+													<xs:sequence>
+														<xs:element ref="ReportingAgencyORI"/>
+														<xs:element ref="ReportingAgencyControlNumber"/>
+													</xs:sequence>
+													<xs:sequence>
+														<xs:element ref="ArrestingAgencyORI"/>
+														<xs:element ref="ArrestingAgencyControlNumber"/>
+													</xs:sequence>
+												</xs:choice>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Citation">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element ref="CitationNumber"/>
+													<xs:element ref="IssuingAgencyORI"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element ref="OtherAgencyNumber"/>
+									</xs:choice>
+									<xs:element name="CaseInformation" type="CaseInformation" minOccurs="0"/>
+									<xs:element name="CaseNullResponses" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Occurrence denotes that a Global Element requested did not return any instances.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="CourtXMLGlobalElement" type="xs:string" maxOccurs="unbounded">
+													<xs:annotation>
+														<xs:documentation>Contains the Element Name of any Global Element subscribed to for which no data was found.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="CaseRequestError" minOccurs="0" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>CaseRequestErrors may consist of permission or access violations or unknown case errors that apply to specific requests for cases.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:simpleContent>
+												<xs:extension base="xs:string">
+													<xs:attribute name="code" type="xs:int"/>
+												</xs:extension>
+											</xs:simpleContent>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="caseNumberKey" type="xs:string" use="required">
+									<xs:annotation>
+										<xs:documentation>Contains the cases file number with all dashes removed.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+								<xs:attribute name="caseKey" type="xs:positiveInteger">
+									<xs:annotation>
+										<xs:documentation>Numeric system identifier for case</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

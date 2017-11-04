@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:annotation>
+    <xs:documentation>Refreshed on: 2016-12-20T08:24:11</xs:documentation>
+  </xs:annotation>
+  <xs:simpleType name="PartyMergeNotificationEventType">
+    <xs:annotation>
+      <xs:documentation>Notification events associated with the merger of two party records</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PartyMerge" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
