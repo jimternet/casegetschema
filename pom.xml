@@ -31,7 +31,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<packageName>gov.mnvcourts.casetget</packageName>
+					<packageName>gov.mncourts.casetget</packageName>
 					<schemaFiles>CourtXML_3_2.xsd</schemaFiles>
 					<schemaFiles>CaseGet_3_7.xsd</schemaFiles>
 					<removeOldOutput>true</removeOldOutput>
